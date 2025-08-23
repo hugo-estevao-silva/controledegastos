@@ -1058,25 +1058,69 @@
             const selectMes = document.getElementById('filtroMes');
             selectMes.innerHTML = '';
             
+            // Coletar todos os meses que têm parcelas
+            const mesesComParcelas = new Set();
             const dataAtual = new Date();
+            const nomesMes = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
+                           'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
             
-            for (let i = -6; i <= 12; i++) {
-                const data = new Date(dataAtual.getFullYear(), dataAtual.getMonth() + i, 1);
-                const mesAno = `${String(data.getMonth() + 1).padStart(2, '0')}/${data.getFullYear()}`;
-                const nomesMes = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
-                               'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-                const nomeCompleto = `${nomesMes[data.getMonth()]} ${data.getFullYear()}`;
+            compras.forEach(compra => {
+                // Calcular primeira parcela baseada no fechamento do cartão
+                const primeiraParcela = calcularPrimeiraParcela(compra.dataCompra, compra.cartao);
+                
+                // Adicionar todos os meses das parcelas desta compra
+                for (let parcela = 1; parcela <= compra.parcelas; parcela++) {
+                    const dataParcela = new Date(primeiraParcela.getFullYear(), primeiraParcela.getMonth() + (parcela - 1), 1);
+                    const mesAno = `${String(dataParcela.getMonth() + 1).padStart(2, '0')}/${dataParcela.getFullYear()}`;
+                    mesesComParcelas.add(mesAno);
+                }
+            });
+            
+            // Converter para array e ordenar
+            const mesesOrdenados = Array.from(mesesComParcelas).sort((a, b) => {
+                const [mesA, anoA] = a.split('/').map(Number);
+                const [mesB, anoB] = b.split('/').map(Number);
+                if (anoA !== anoB) return anoA - anoB;
+                return mesA - mesB;
+            });
+            
+            // Se não há compras, mostrar alguns meses padrão
+            if (mesesOrdenados.length === 0) {
+                for (let i = -2; i <= 12; i++) {
+                    const data = new Date(dataAtual.getFullYear(), dataAtual.getMonth() + i, 1);
+                    const mesAno = `${String(data.getMonth() + 1).padStart(2, '0')}/${data.getFullYear()}`;
+                    mesesOrdenados.push(mesAno);
+                }
+                // Remover duplicatas e ordenar novamente
+                const mesesUnicos = [...new Set(mesesOrdenados)].sort((a, b) => {
+                    const [mesA, anoA] = a.split('/').map(Number);
+                    const [mesB, anoB] = b.split('/').map(Number);
+                    if (anoA !== anoB) return anoA - anoB;
+                    return mesA - mesB;
+                });
+                mesesOrdenados.length = 0;
+                mesesOrdenados.push(...mesesUnicos);
+            }
+            
+            // Adicionar opções ao select
+            mesesOrdenados.forEach((mesAno, index) => {
+                const [mes, ano] = mesAno.split('/').map(Number);
+                const nomeCompleto = `${nomesMes[mes - 1]} ${ano}`;
                 
                 const option = document.createElement('option');
                 option.value = mesAno;
                 option.textContent = nomeCompleto;
                 
-                if (i === 1) { // Próximo mês como padrão (primeira parcela)
+                // Selecionar o próximo mês como padrão, ou o primeiro disponível
+                const proximoMes = new Date(dataAtual.getFullYear(), dataAtual.getMonth() + 1, 1);
+                const proximoMesAno = `${String(proximoMes.getMonth() + 1).padStart(2, '0')}/${proximoMes.getFullYear()}`;
+                
+                if (mesAno === proximoMesAno || (index === 0 && !mesesOrdenados.includes(proximoMesAno))) {
                     option.selected = true;
                 }
                 
                 selectMes.appendChild(option);
-            }
+            });
         }
 
         function atualizarFiltroCartoes() {
@@ -1092,6 +1136,9 @@
                 option.textContent = cartao;
                 selectCartao.appendChild(option);
             });
+            
+            // Atualizar lista de meses também, pois pode ter mudado
+            preencherMeses();
         }
 
         function calcularPrimeiraParcela(dataCompra, nomeCartao) {
@@ -1127,6 +1174,9 @@
         function atualizarVisualizacao() {
             const cartaoFiltro = document.getElementById('filtroCartao').value;
             const mesFiltro = document.getElementById('filtroMes').value;
+            
+            // Atualizar lista de meses sempre que a visualização for chamada
+            preencherMeses();
             
             if (!mesFiltro) {
                 document.getElementById('totalPagar').textContent = 'R$ 0,00';
