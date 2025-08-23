@@ -27,6 +27,49 @@
             overflow: hidden;
         }
 
+        .login-container {
+            max-width: 400px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .login-container h1 {
+            color: #1e293b;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .user-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-name {
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
         .tabs {
             display: flex;
             background: #f8fafc;
@@ -267,6 +310,25 @@
             color: #d1d5db;
         }
 
+        .status-message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
         @media (max-width: 768px) {
             .form-grid {
                 grid-template-columns: 1fr;
@@ -280,11 +342,41 @@
             .summary-total {
                 font-size: 36px;
             }
+
+            .user-info {
+                flex-direction: column;
+                gap: 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Tela de Login -->
+    <div id="loginScreen" class="login-container">
+        <h1>💳 Controle de Gastos</h1>
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="nomeUsuario">Seu Nome</label>
+            <input type="text" id="nomeUsuario" placeholder="Digite seu nome" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 20px;">
+            <label for="senhaUsuario">Senha (opcional)</label>
+            <input type="password" id="senhaUsuario" placeholder="Digite uma senha (opcional)">
+            <small style="color: #6b7280; margin-top: 5px;">A senha é opcional e serve apenas para maior segurança</small>
+        </div>
+        <button class="btn btn-primary" onclick="fazerLogin()" style="width: 100%;">
+            Entrar
+        </button>
+        <div id="statusLogin"></div>
+    </div>
+
+    <!-- Aplicação Principal -->
+    <div id="mainApp" class="container" style="display: none;">
+        <!-- Informações do usuário -->
+        <div class="user-info">
+            <div class="user-name">Bem-vindo(a), <span id="nomeUsuarioLogado"></span>!</div>
+            <button class="logout-btn" onclick="fazerLogout()">Sair</button>
+        </div>
+
         <div class="tabs">
             <button class="tab-button active" onclick="switchTab('compras')">
                 📝 Cadastro de Compras
@@ -391,6 +483,7 @@
                 <button class="btn btn-primary" onclick="adicionarCompra()">
                     ➕ Adicionar Compra
                 </button>
+                <div id="statusCompra"></div>
             </div>
 
             <div class="table-container">
@@ -498,6 +591,7 @@
                 <button class="btn btn-primary" onclick="adicionarCartao()">
                     ➕ Adicionar Cartão
                 </button>
+                <div id="statusCartao"></div>
             </div>
 
             <div class="table-container">
@@ -522,22 +616,163 @@
     </div>
 
     <script>
-        // Dados das compras e cartões
+        // Variáveis globais
+        let usuarioAtual = null;
         let compras = [];
-        let cartoes = [
-            { id: 1, nome: "Nubank", fechamento: 1, vencimento: 10, limite: 0, observacoes: "" },
-            { id: 2, nome: "Inter", fechamento: 15, vencimento: 25, limite: 0, observacoes: "" },
-            { id: 3, nome: "C6 Bank", fechamento: 5, vencimento: 15, limite: 0, observacoes: "" }
-        ];
+        let cartoes = [];
 
-        // Inicialização da página
-        document.addEventListener('DOMContentLoaded', function() {
+        // Sistema de persistência de dados
+        class DataManager {
+            static getStorageKey(usuario, tipo) {
+                return `gastos_${usuario.toLowerCase().replace(/\s+/g, '_')}_${tipo}`;
+            }
+
+            static salvarDados(usuario, tipo, dados) {
+                try {
+                    const key = this.getStorageKey(usuario, tipo);
+                    localStorage.setItem(key, JSON.stringify(dados));
+                    return true;
+                } catch (error) {
+                    console.error('Erro ao salvar dados:', error);
+                    return false;
+                }
+            }
+
+            static carregarDados(usuario, tipo) {
+                try {
+                    const key = this.getStorageKey(usuario, tipo);
+                    const dados = localStorage.getItem(key);
+                    return dados ? JSON.parse(dados) : null;
+                } catch (error) {
+                    console.error('Erro ao carregar dados:', error);
+                    return null;
+                }
+            }
+
+            static verificarUsuario(nome, senha = '') {
+                const usuarios = JSON.parse(localStorage.getItem('usuarios_cadastrados')) || {};
+                const usuarioKey = nome.toLowerCase().replace(/\s+/g, '_');
+                
+                if (usuarios[usuarioKey]) {
+                    // Usuário existe, verificar senha se foi definida
+                    if (usuarios[usuarioKey].senha && usuarios[usuarioKey].senha !== senha) {
+                        return { sucesso: false, mensagem: 'Senha incorreta!' };
+                    }
+                    return { sucesso: true, usuario: usuarios[usuarioKey] };
+                } else {
+                    // Novo usuário
+                    const novoUsuario = { nome, senha, dataCriacao: new Date().toISOString() };
+                    usuarios[usuarioKey] = novoUsuario;
+                    localStorage.setItem('usuarios_cadastrados', JSON.stringify(usuarios));
+                    return { sucesso: true, usuario: novoUsuario, novo: true };
+                }
+            }
+        }
+
+        // Funções de autenticação
+        function fazerLogin() {
+            const nome = document.getElementById('nomeUsuario').value.trim();
+            const senha = document.getElementById('senhaUsuario').value;
+            const statusDiv = document.getElementById('statusLogin');
+
+            if (!nome) {
+                mostrarStatus('statusLogin', 'Por favor, digite seu nome!', 'error');
+                return;
+            }
+
+            const resultado = DataManager.verificarUsuario(nome, senha);
+            
+            if (resultado.sucesso) {
+                usuarioAtual = resultado.usuario;
+                document.getElementById('nomeUsuarioLogado').textContent = usuarioAtual.nome;
+                
+                // Carregar dados do usuário
+                carregarDadosUsuario();
+                
+                // Mostrar aplicação principal
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+                
+                const mensagem = resultado.novo ? 
+                    'Bem-vindo! Sua conta foi criada com sucesso!' : 
+                    'Login realizado com sucesso!';
+                setTimeout(() => mostrarStatus('statusCompra', mensagem, 'success'), 500);
+                
+            } else {
+                mostrarStatus('statusLogin', resultado.mensagem, 'error');
+            }
+        }
+
+        function fazerLogout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                usuarioAtual = null;
+                compras = [];
+                cartoes = [];
+                
+                // Limpar formulários
+                document.getElementById('nomeUsuario').value = '';
+                document.getElementById('senhaUsuario').value = '';
+                
+                // Mostrar tela de login
+                document.getElementById('mainApp').style.display = 'none';
+                document.getElementById('loginScreen').style.display = 'block';
+            }
+        }
+
+        function carregarDadosUsuario() {
+            // Carregar compras
+            const comprasCarregadas = DataManager.carregarDados(usuarioAtual.nome, 'compras');
+            compras = comprasCarregadas || [];
+            
+            // Carregar cartões (ou usar padrão para novos usuários)
+            const cartoesCarregados = DataManager.carregarDados(usuarioAtual.nome, 'cartoes');
+            cartoes = cartoesCarregados || [
+                { id: 1, nome: "Nubank", fechamento: 1, vencimento: 10, limite: 0, observacoes: "" },
+                { id: 2, nome: "Inter", fechamento: 15, vencimento: 25, limite: 0, observacoes: "" },
+                { id: 3, nome: "C6 Bank", fechamento: 5, vencimento: 15, limite: 0, observacoes: "" }
+            ];
+            
+            // Salvar cartões padrão se for novo usuário
+            if (!cartoesCarregados) {
+                DataManager.salvarDados(usuarioAtual.nome, 'cartoes', cartoes);
+            }
+            
+            // Atualizar interface
+            atualizarInterface();
+        }
+
+        function salvarDadosUsuario() {
+            if (usuarioAtual) {
+                DataManager.salvarDados(usuarioAtual.nome, 'compras', compras);
+                DataManager.salvarDados(usuarioAtual.nome, 'cartoes', cartoes);
+            }
+        }
+
+        function mostrarStatus(elementId, mensagem, tipo) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="status-message ${tipo}">${mensagem}</div>`;
+            setTimeout(() => {
+                element.innerHTML = '';
+            }, 3000);
+        }
+
+        function atualizarInterface() {
             document.getElementById('dataCompra').value = new Date().toISOString().split('T')[0];
             preencherMeses();
             atualizarFiltroCartoes();
             carregarCartoes();
             atualizarTabelaCartoes();
-            carregarOpcoesParcelas('normal'); // Carregar parcelas para compra normal por padrão
+            atualizarTabelaCompras();
+            carregarOpcoesParcelas('normal');
+        }
+
+        // Inicialização da página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se há usuário logado (opcional - para auto-login)
+            const ultimoUsuario = localStorage.getItem('ultimo_usuario_logado');
+            if (ultimoUsuario) {
+                document.getElementById('nomeUsuario').value = ultimoUsuario;
+            }
         });
 
         function carregarOpcoesParcelas(tipoCompra) {
@@ -634,7 +869,7 @@
             const observacoes = document.getElementById('observacoesCartao').value;
 
             if (!nome || !fechamento || !vencimento) {
-                alert('Por favor, preencha todos os campos obrigatórios!');
+                mostrarStatus('statusCartao', 'Por favor, preencha todos os campos obrigatórios!', 'error');
                 return;
             }
 
@@ -648,16 +883,20 @@
             };
 
             cartoes.push(cartao);
+            salvarDadosUsuario(); // Salvar dados
             atualizarTabelaCartoes();
             carregarCartoes();
             limparFormularioCartao();
+            mostrarStatus('statusCartao', 'Cartão adicionado com sucesso!', 'success');
         }
 
         function excluirCartao(id) {
             if (confirm('Tem certeza que deseja excluir este cartão?')) {
                 cartoes = cartoes.filter(cartao => cartao.id !== id);
+                salvarDadosUsuario(); // Salvar dados
                 atualizarTabelaCartoes();
                 carregarCartoes();
+                mostrarStatus('statusCartao', 'Cartão excluído com sucesso!', 'success');
             }
         }
 
@@ -714,12 +953,12 @@
 
             // Validação específica por tipo
             if (tipoCompra === 'normal' && !cartao) {
-                alert('Por favor, selecione um cartão para compras normais!');
+                mostrarStatus('statusCompra', 'Por favor, selecione um cartão para compras normais!', 'error');
                 return;
             }
 
             if (!dataCompra || !descricao || !valorTotal || !parcelas) {
-                alert('Por favor, preencha todos os campos obrigatórios!');
+                mostrarStatus('statusCompra', 'Por favor, preencha todos os campos obrigatórios!', 'error');
                 return;
             }
 
@@ -745,9 +984,11 @@
             }
 
             compras.push(compra);
+            salvarDadosUsuario(); // Salvar dados
             atualizarTabelaCompras();
             limparFormulario();
             atualizarFiltroCartoes();
+            mostrarStatus('statusCompra', 'Compra adicionada com sucesso!', 'success');
         }
 
         function atualizarTabelaCompras() {
@@ -779,9 +1020,11 @@
         function excluirCompra(id) {
             if (confirm('Tem certeza que deseja excluir esta compra?')) {
                 compras = compras.filter(compra => compra.id !== id);
+                salvarDadosUsuario(); // Salvar dados
                 atualizarTabelaCompras();
                 atualizarFiltroCartoes();
                 atualizarVisualizacao();
+                mostrarStatus('statusCompra', 'Compra excluída com sucesso!', 'success');
             }
         }
 
@@ -955,6 +1198,13 @@
                 `).join('');
             }
         }
+
+        // Salvar último usuário para facilitar próximo login
+        window.addEventListener('beforeunload', function() {
+            if (usuarioAtual) {
+                localStorage.setItem('ultimo_usuario_logado', usuarioAtual.nome);
+            }
+        });
     </script>
 </body>
 </html>
