@@ -27,23 +27,6 @@
             overflow: hidden;
         }
 
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            opacity: 0.9;
-            font-size: 16px;
-        }
-
         .tabs {
             display: flex;
             background: #f8fafc;
@@ -60,7 +43,6 @@
             color: #64748b;
             transition: all 0.3s ease;
             border-bottom: 3px solid transparent;
-            flex: 1;
         }
 
         .tab-button.active {
@@ -150,15 +132,6 @@
             transform: translateY(-2px);
         }
 
-        .btn-success {
-            background: #059669;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #047857;
-        }
-
         .btn-danger {
             background: #ef4444;
             color: white;
@@ -166,31 +139,6 @@
 
         .btn-danger:hover {
             background: #dc2626;
-        }
-
-        .status-message {
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            font-weight: 500;
-        }
-
-        .status-success {
-            background: #d1fae5;
-            color: #065f46;
-            border: 1px solid #a7f3d0;
-        }
-
-        .status-error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fca5a5;
-        }
-
-        .status-info {
-            background: #dbeafe;
-            color: #1e40af;
-            border: 1px solid #93c5fd;
         }
 
         .table-container {
@@ -228,76 +176,24 @@
             font-weight: 600;
         }
 
-        .setup-section {
-            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        .presentation-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 30px;
             border-radius: 15px;
             margin-bottom: 30px;
-            text-align: center;
         }
 
-        .setup-section h3 {
-            margin-bottom: 15px;
-            font-size: 24px;
-        }
-
-        .setup-steps {
-            background: white;
-            color: #1e293b;
-            padding: 25px;
-            border-radius: 15px;
-            margin: 20px 0;
-            text-align: left;
-        }
-
-        .setup-steps ol {
-            margin-left: 20px;
-        }
-
-        .setup-steps li {
-            margin-bottom: 10px;
-            line-height: 1.6;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3b82f6;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .visualization-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        .presentation-section h2 {
             margin-bottom: 20px;
-        }
-
-        .summary-total {
-            font-size: 48px;
-            font-weight: bold;
-            color: #3b82f6;
+            font-size: 28px;
             text-align: center;
-            margin: 20px 0;
         }
 
         .filters {
             display: flex;
             gap: 20px;
+            justify-content: center;
             margin-bottom: 30px;
             flex-wrap: wrap;
         }
@@ -305,7 +201,70 @@
         .filter-group {
             display: flex;
             flex-direction: column;
+            align-items: center;
+        }
+
+        .filter-group select {
+            background: white;
             min-width: 200px;
+        }
+
+        .summary-card {
+            background: white;
+            color: #1e293b;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .summary-total {
+            font-size: 48px;
+            font-weight: bold;
+            color: #3b82f6;
+            margin: 20px 0;
+        }
+
+        .details-list {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-description {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            font-weight: bold;
+            color: #059669;
+            font-size: 18px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: #6b7280;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #d1d5db;
         }
 
         @media (max-width: 768px) {
@@ -315,72 +274,192 @@
             
             .filters {
                 flex-direction: column;
+                align-items: center;
             }
             
-            .tab-button {
-                font-size: 14px;
-                padding: 12px 15px;
+            .summary-total {
+                font-size: 36px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>💳 Controle de Gastos</h1>
-            <p>Gerencie seus cartões e gastos de forma inteligente</p>
-        </div>
-
         <div class="tabs">
-            <button class="tab-button active" onclick="switchTab('setup')">
-                🔧 Configuração
+            <button class="tab-button active" onclick="switchTab('compras')">
+                📝 Cadastro de Compras
             </button>
-            <button class="tab-button" onclick="switchTab('compras')">
-                📝 Compras
+            <button class="tab-button" onclick="switchTab('apresentacao')">
+                📊 Visualização
             </button>
-            <button class="tab-button" onclick="switchTab('visualizacao')">
-                📊 Relatórios
+            <button class="tab-button" onclick="switchTab('configuracoes')">
+                ⚙️ Configurações
             </button>
         </div>
 
-        <!-- Aba de Configuração -->
-        <div id="setup" class="tab-content active">
-            <div class="setup-section">
-                <h3>🚀 Configuração Inicial</h3>
-                <p>Configure a integração com o Google Sheets para salvar seus dados</p>
-            </div>
-
+        <!-- Aba de Cadastro de Compras -->
+        <div id="compras" class="tab-content active">
             <div class="form-section">
-                <h2>📋 ID da Planilha do Google Sheets</h2>
-                <div class="setup-steps">
-                    <h4>Como obter o ID da sua planilha:</h4>
-                    <ol>
-                        <li>Abra o Google Sheets e crie uma nova planilha</li>
-                        <li>Na URL, copie o ID que aparece entre "/d/" e "/edit"</li>
-                        <li>Exemplo: https://docs.google.com/spreadsheets/d/<strong>SEU_ID_AQUI</strong>/edit</li>
-                        <li>Cole o ID no campo abaixo e clique em "Conectar"</li>
-                        <li>Compartilhe a planilha como "Qualquer pessoa com o link pode editar"</li>
-                    </ol>
+                <h2>Nova Compra</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="tipoCompra">Tipo de Compra</label>
+                        <select id="tipoCompra" onchange="toggleFinanciamento()">
+                            <option value="normal">💳 Compra no Cartão</option>
+                            <option value="financiamento">💰 Financiamento</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="grupoCartao">
+                        <label for="cartao">Cartão de Crédito</label>
+                        <select id="cartao" required>
+                            <option value="">Selecione o cartão</option>
+                            <!-- Cartões serão carregados dinamicamente -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dataCompra">Data da Compra/Contratação</label>
+                        <input type="date" id="dataCompra" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="descricao" id="labelDescricao">Descrição da Compra</label>
+                        <input type="text" id="descricao" placeholder="Ex: Netflix, Celular, Supermercado" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="categoria">Categoria</label>
+                        <select id="categoria">
+                            <option value="">Selecione uma categoria</option>
+                            <option value="Alimentação">Alimentação</option>
+                            <option value="Transporte">Transporte</option>
+                            <option value="Entretenimento">Entretenimento</option>
+                            <option value="Assinaturas">Assinaturas</option>
+                            <option value="Saúde">Saúde</option>
+                            <option value="Educação">Educação</option>
+                            <option value="Roupas">Roupas</option>
+                            <option value="Eletrônicos">Eletrônicos</option>
+                            <option value="Casa">Casa</option>
+                            <option value="Financiamento">💰 Financiamento</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="valorTotal" id="labelValorTotal">Valor Total (R$)</label>
+                        <input type="number" id="valorTotal" step="0.01" min="0" placeholder="0,00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="parcelas">Quantidade de Parcelas</label>
+                        <select id="parcelas" required>
+                            <!-- Opções serão carregadas dinamicamente -->
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Seção de Financiamento (oculta por padrão) -->
+                <div id="secaoFinanciamento" style="display: none;">
+                    <h3 style="color: #1e293b; margin-bottom: 15px;">💰 Detalhes do Financiamento</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="valorFinanciado">Valor Financiado (R$)</label>
+                            <input type="number" id="valorFinanciado" step="0.01" min="0" placeholder="Valor sem entrada">
+                        </div>
+                        <div class="form-group">
+                            <label for="taxaJuros">Taxa de Juros (% a.m.)</label>
+                            <input type="number" id="taxaJuros" step="0.01" min="0" placeholder="Ex: 2.5">
+                        </div>
+                        <div class="form-group">
+                            <label for="tipoFinanciamento">Tipo de Financiamento</label>
+                            <select id="tipoFinanciamento">
+                                <option value="">Selecione o tipo</option>
+                                <option value="Veículo">Veículo</option>
+                                <option value="Imóvel">Imóvel</option>
+                                <option value="Reforma">Reforma</option>
+                                <option value="Educação">Educação</option>
+                                <option value="Consolidação">Consolidação de Dívidas</option>
+                                <option value="Outros">Outros</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="entrada">Valor da Entrada (R$)</label>
+                            <input type="number" id="entrada" step="0.01" min="0" placeholder="0,00">
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="spreadsheetId">ID da Planilha</label>
-                    <input type="text" id="spreadsheetId" placeholder="Cole aqui o ID da sua planilha" required>
+                    <label for="observacoes">Observações (opcional)</label>
+                    <textarea id="observacoes" rows="3" placeholder="Informações adicionais sobre a compra/financiamento"></textarea>
                 </div>
-                <button class="btn btn-primary" onclick="conectarPlanilha()">
-                    🔗 Conectar Planilha
+                <button class="btn btn-primary" onclick="adicionarCompra()">
+                    ➕ Adicionar Compra
                 </button>
-                
-                <div id="connectionStatus" class="hidden"></div>
             </div>
 
-            <!-- Configuração de Cartões -->
-            <div class="form-section" id="cartoesConfig" style="display: none;">
-                <h2>💳 Configurar Cartões</h2>
+            <div class="table-container">
+                <h2 style="padding: 20px; margin: 0; background: #f8fafc;">Histórico de Compras</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Cartão</th>
+                            <th>Descrição</th>
+                            <th>Categoria</th>
+                            <th>Valor Total</th>
+                            <th>Parcelas</th>
+                            <th>Valor/Parcela</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaCompras">
+                        <!-- Compras serão inseridas aqui -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Aba de Apresentação -->
+        <div id="apresentacao" class="tab-content">
+            <div class="presentation-section">
+                <h2>💳 Visualização de Gastos</h2>
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="filtroCartao">Cartão</label>
+                        <select id="filtroCartao" onchange="atualizarVisualizacao()">
+                            <option value="">Todos os cartões</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filtroMes">Mês</label>
+                        <select id="filtroMes" onchange="atualizarVisualizacao()">
+                            <!-- Meses serão preenchidos dinamicamente -->
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="summary-card">
+                    <h3>Total a Pagar</h3>
+                    <div class="summary-total" id="totalPagar">R$ 0,00</div>
+                    <p id="periodoInfo">Selecione um período para visualizar</p>
+                </div>
+            </div>
+
+            <div class="details-list">
+                <h3 style="margin-bottom: 20px; color: #1e293b;">Detalhamento dos Gastos</h3>
+                <div id="detalhesGastos">
+                    <div class="empty-state">
+                        <div style="font-size: 48px; margin-bottom: 20px;">📊</div>
+                        <p>Selecione um cartão e mês para ver os detalhes dos gastos</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aba de Configurações -->
+        <div id="configuracoes" class="tab-content">
+            <div class="form-section">
+                <h2>⚙️ Configuração de Cartões</h2>
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="nomeCartao">Nome do Cartão</label>
-                        <input type="text" id="nomeCartao" placeholder="Ex: Nubank, Inter, C6" required>
+                        <input type="text" id="nomeCartao" placeholder="Ex: Nubank Roxinho" required>
                     </div>
                     <div class="form-group">
                         <label for="diaFechamento">Dia de Fechamento</label>
@@ -392,6 +471,7 @@
                             <option value="15">Dia 15</option>
                             <option value="20">Dia 20</option>
                             <option value="25">Dia 25</option>
+                            <option value="30">Dia 30</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -407,152 +487,34 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="limiteCartao">Limite (R$)</label>
-                        <input type="number" id="limiteCartao" step="0.01" min="0" placeholder="Opcional">
+                        <label for="limiteCartao">Limite (R$) - Opcional</label>
+                        <input type="number" id="limiteCartao" step="0.01" min="0" placeholder="0,00">
                     </div>
                 </div>
-                <button class="btn btn-success" onclick="adicionarCartao()">
+                <div class="form-group">
+                    <label for="observacoesCartao">Observações do Cartão (opcional)</label>
+                    <textarea id="observacoesCartao" rows="2" placeholder="Informações adicionais sobre o cartão"></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="adicionarCartao()">
                     ➕ Adicionar Cartão
                 </button>
-
-                <div class="table-container" style="margin-top: 30px;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Cartão</th>
-                                <th>Fechamento</th>
-                                <th>Vencimento</th>
-                                <th>Limite</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabelaCartoes">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Aba de Compras -->
-        <div id="compras" class="tab-content">
-            <div class="form-section">
-                <h2>🛍️ Nova Compra</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="cartaoCompra">Cartão</label>
-                        <select id="cartaoCompra" required>
-                            <option value="">Selecione o cartão</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="dataCompra">Data da Compra</label>
-                        <input type="date" id="dataCompra" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="descricaoCompra">Descrição</label>
-                        <input type="text" id="descricaoCompra" placeholder="Ex: Netflix, Supermercado" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="categoriaCompra">Categoria</label>
-                        <select id="categoriaCompra">
-                            <option value="Alimentação">Alimentação</option>
-                            <option value="Transporte">Transporte</option>
-                            <option value="Entretenimento">Entretenimento</option>
-                            <option value="Assinaturas">Assinaturas</option>
-                            <option value="Saúde">Saúde</option>
-                            <option value="Roupas">Roupas</option>
-                            <option value="Eletrônicos">Eletrônicos</option>
-                            <option value="Casa">Casa</option>
-                            <option value="Outros">Outros</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="valorCompra">Valor (R$)</label>
-                        <input type="number" id="valorCompra" step="0.01" min="0" placeholder="0,00" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="parcelasCompra">Parcelas</label>
-                        <select id="parcelasCompra" required>
-                            <option value="1">1x</option>
-                            <option value="2">2x</option>
-                            <option value="3">3x</option>
-                            <option value="4">4x</option>
-                            <option value="5">5x</option>
-                            <option value="6">6x</option>
-                            <option value="7">7x</option>
-                            <option value="8">8x</option>
-                            <option value="9">9x</option>
-                            <option value="10">10x</option>
-                            <option value="11">11x</option>
-                            <option value="12">12x</option>
-                        </select>
-                    </div>
-                </div>
-                <button class="btn btn-primary" onclick="adicionarCompra()">
-                    ➕ Registrar Compra
-                </button>
             </div>
 
             <div class="table-container">
-                <h3 style="padding: 20px; margin: 0; background: #f8fafc;">Últimas Compras</h3>
+                <h2 style="padding: 20px; margin: 0; background: #f8fafc;">Meus Cartões</h2>
                 <table>
                     <thead>
                         <tr>
-                            <th>Data</th>
-                            <th>Cartão</th>
-                            <th>Descrição</th>
-                            <th>Categoria</th>
-                            <th>Valor</th>
-                            <th>Parcelas</th>
-                            <th>Valor/Parcela</th>
+                            <th>Nome do Cartão</th>
+                            <th>Fechamento</th>
+                            <th>Vencimento</th>
+                            <th>Limite</th>
+                            <th>Observações</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
-                    <tbody id="tabelaCompras">
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Aba de Visualização -->
-        <div id="visualizacao" class="tab-content">
-            <div class="visualization-card">
-                <h2>📊 Resumo de Gastos</h2>
-                <div class="filters">
-                    <div class="filter-group">
-                        <label for="filtroCartao">Cartão</label>
-                        <select id="filtroCartao" onchange="atualizarResumo()">
-                            <option value="">Todos os cartões</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label for="filtroMes">Mês/Ano</label>
-                        <select id="filtroMes" onchange="atualizarResumo()">
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label>&nbsp;</label>
-                        <button class="btn btn-primary" onclick="atualizarResumo()">
-                            🔄 Atualizar
-                        </button>
-                    </div>
-                </div>
-
-                <div class="summary-total" id="totalGastos">R$ 0,00</div>
-                <p style="text-align: center; color: #6b7280;" id="infoResumo">Selecione um período</p>
-            </div>
-
-            <div class="table-container">
-                <h3 style="padding: 20px; margin: 0; background: #f8fafc;">Detalhamento</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Descrição</th>
-                            <th>Cartão</th>
-                            <th>Parcela</th>
-                            <th>Valor</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabelaResumo">
+                    <tbody id="tabelaCartoes">
+                        <!-- Cartões serão inseridos aqui -->
                     </tbody>
                 </table>
             </div>
@@ -560,24 +522,48 @@
     </div>
 
     <script>
-        // Variáveis globais
-        let SPREADSHEET_ID = '';
-        let isConnected = false;
+        // Dados das compras e cartões
+        let compras = [];
+        let cartoes = [
+            { id: 1, nome: "Nubank", fechamento: 1, vencimento: 10, limite: 0, observacoes: "" },
+            { id: 2, nome: "Inter", fechamento: 15, vencimento: 25, limite: 0, observacoes: "" },
+            { id: 3, nome: "C6 Bank", fechamento: 5, vencimento: 15, limite: 0, observacoes: "" }
+        ];
 
-        // Inicialização
+        // Inicialização da página
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('dataCompra').value = new Date().toISOString().split('T')[0];
             preencherMeses();
-            
-            // Verificar se já existe uma conexão salva
-            const savedSpreadsheetId = localStorage.getItem('spreadsheetId');
-            if (savedSpreadsheetId) {
-                document.getElementById('spreadsheetId').value = savedSpreadsheetId;
-                SPREADSHEET_ID = savedSpreadsheetId;
-                mostrarConfigCartoes();
-                carregarDados();
-            }
+            atualizarFiltroCartoes();
+            carregarCartoes();
+            atualizarTabelaCartoes();
+            carregarOpcoesParcelas('normal'); // Carregar parcelas para compra normal por padrão
         });
+
+        function carregarOpcoesParcelas(tipoCompra) {
+            const selectParcelas = document.getElementById('parcelas');
+            selectParcelas.innerHTML = '';
+
+            if (tipoCompra === 'normal') {
+                // Opções para cartão de crédito (até 24x)
+                const opcoes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 18, 24];
+                opcoes.forEach(parcela => {
+                    const option = document.createElement('option');
+                    option.value = parcela;
+                    option.textContent = parcela === 1 ? '1x (À vista)' : `${parcela}x`;
+                    selectParcelas.appendChild(option);
+                });
+            } else if (tipoCompra === 'financiamento') {
+                // Opções para financiamento (até 96x)
+                const opcoes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 18, 24, 30, 36, 48, 60, 72, 84, 96];
+                opcoes.forEach(parcela => {
+                    const option = document.createElement('option');
+                    option.value = parcela;
+                    option.textContent = parcela === 1 ? '1x (À vista)' : `${parcela}x`;
+                    selectParcelas.appendChild(option);
+                });
+            }
+        }
 
         function switchTab(tabName) {
             // Ocultar todas as abas
@@ -595,181 +581,244 @@
             
             // Ativar botão correspondente
             event.target.classList.add('active');
-
-            // Carregar dados se necessário
-            if (tabName === 'compras' || tabName === 'visualizacao') {
-                carregarDados();
+            
+            // Atualizar visualização se estiver na aba de apresentação
+            if (tabName === 'apresentacao') {
+                atualizarVisualizacao();
             }
         }
 
-        function mostrarStatus(mensagem, tipo = 'info') {
-            const status = document.getElementById('connectionStatus');
-            status.className = `status-message status-${tipo}`;
-            status.textContent = mensagem;
-            status.classList.remove('hidden');
-        }
-
-        function conectarPlanilha() {
-            const spreadsheetId = document.getElementById('spreadsheetId').value.trim();
+        function toggleFinanciamento() {
+            const tipoCompra = document.getElementById('tipoCompra').value;
+            const secaoFinanciamento = document.getElementById('secaoFinanciamento');
+            const categoria = document.getElementById('categoria');
+            const grupoCartao = document.getElementById('grupoCartao');
+            const cartaoSelect = document.getElementById('cartao');
+            const labelDescricao = document.getElementById('labelDescricao');
+            const labelValorTotal = document.getElementById('labelValorTotal');
             
-            if (!spreadsheetId) {
-                mostrarStatus('Por favor, insira o ID da planilha', 'error');
-                return;
-            }
-
-            SPREADSHEET_ID = spreadsheetId;
-            localStorage.setItem('spreadsheetId', spreadsheetId);
-            
-            mostrarStatus('Conectado com sucesso! Agora você pode configurar seus cartões.', 'success');
-            mostrarConfigCartoes();
-            inicializarPlanilha();
-        }
-
-        function mostrarConfigCartoes() {
-            document.getElementById('cartoesConfig').style.display = 'block';
-            isConnected = true;
-        }
-
-        async function inicializarPlanilha() {
-            // Criar as abas necessárias na planilha
-            const data = [
-                // Aba Cartões
-                ['Nome', 'Fechamento', 'Vencimento', 'Limite'],
+            if (tipoCompra === 'financiamento') {
+                secaoFinanciamento.style.display = 'block';
+                grupoCartao.style.display = 'none';
+                categoria.value = 'Financiamento';
+                cartaoSelect.removeAttribute('required');
+                labelDescricao.textContent = 'Descrição do Financiamento';
+                labelValorTotal.textContent = 'Valor Total do Financiamento (R$)';
                 
-                // Dados de exemplo para Compras (será limpo depois)
-                ['Data', 'Cartão', 'Descrição', 'Categoria', 'Valor Total', 'Parcelas', 'Valor Parcela']
-            ];
-            
-            mostrarStatus('Planilha inicializada! Pronta para uso.', 'success');
+                // Carregar opções de parcelas para financiamento
+                carregarOpcoesParcelas('financiamento');
+                
+                // Limpar seleção do cartão
+                cartaoSelect.value = '';
+            } else {
+                secaoFinanciamento.style.display = 'none';
+                grupoCartao.style.display = 'block';
+                cartaoSelect.setAttribute('required', 'required');
+                labelDescricao.textContent = 'Descrição da Compra';
+                labelValorTotal.textContent = 'Valor Total (R$)';
+                
+                // Carregar opções de parcelas para cartão
+                carregarOpcoesParcelas('normal');
+                
+                if (categoria.value === 'Financiamento') {
+                    categoria.value = '';
+                }
+            }
         }
 
         function adicionarCartao() {
-            if (!isConnected) {
-                mostrarStatus('Conecte-se primeiro à planilha!', 'error');
-                return;
-            }
-
-            const nome = document.getElementById('nomeCartao').value.trim();
-            const fechamento = document.getElementById('diaFechamento').value;
-            const vencimento = document.getElementById('diaVencimento').value;
-            const limite = document.getElementById('limiteCartao').value || '0';
+            const nome = document.getElementById('nomeCartao').value;
+            const fechamento = parseInt(document.getElementById('diaFechamento').value);
+            const vencimento = parseInt(document.getElementById('diaVencimento').value);
+            const limite = parseFloat(document.getElementById('limiteCartao').value) || 0;
+            const observacoes = document.getElementById('observacoesCartao').value;
 
             if (!nome || !fechamento || !vencimento) {
-                mostrarStatus('Preencha todos os campos obrigatórios do cartão!', 'error');
+                alert('Por favor, preencha todos os campos obrigatórios!');
                 return;
             }
 
-            // Adicionar à tabela local
+            const cartao = {
+                id: Date.now(),
+                nome,
+                fechamento,
+                vencimento,
+                limite,
+                observacoes
+            };
+
+            cartoes.push(cartao);
+            atualizarTabelaCartoes();
+            carregarCartoes();
+            limparFormularioCartao();
+        }
+
+        function excluirCartao(id) {
+            if (confirm('Tem certeza que deseja excluir este cartão?')) {
+                cartoes = cartoes.filter(cartao => cartao.id !== id);
+                atualizarTabelaCartoes();
+                carregarCartoes();
+            }
+        }
+
+        function atualizarTabelaCartoes() {
             const tbody = document.getElementById('tabelaCartoes');
-            const row = tbody.insertRow();
-            row.innerHTML = `
-                <td>${nome}</td>
-                <td>Dia ${fechamento}</td>
-                <td>Dia ${vencimento}</td>
-                <td class="currency">R$ ${parseFloat(limite).toFixed(2).replace('.', ',')}</td>
-                <td>
-                    <button class="btn btn-danger" onclick="excluirCartao(this)">🗑️</button>
-                </td>
-            `;
+            tbody.innerHTML = '';
 
-            // Adicionar ao select de compras
-            const selectCartao = document.getElementById('cartaoCompra');
-            const option = document.createElement('option');
-            option.value = nome;
-            option.textContent = nome;
-            selectCartao.appendChild(option);
+            cartoes.forEach(cartao => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${cartao.nome}</td>
+                    <td>Dia ${cartao.fechamento}</td>
+                    <td>Dia ${cartao.vencimento}</td>
+                    <td class="currency">${cartao.limite > 0 ? `R$ ${cartao.limite.toFixed(2).replace('.', ',')}` : 'Não informado'}</td>
+                    <td>${cartao.observacoes || '-'}</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="excluirCartao(${cartao.id})">
+                            🗑️
+                        </button>
+                    </td>
+                `;
+            });
+        }
 
-            // Adicionar ao filtro
-            const filtroCartao = document.getElementById('filtroCartao');
-            const optionFiltro = document.createElement('option');
-            optionFiltro.value = nome;
-            optionFiltro.textContent = nome;
-            filtroCartao.appendChild(optionFiltro);
+        function carregarCartoes() {
+            const selectCartao = document.getElementById('cartao');
+            selectCartao.innerHTML = '<option value="">Selecione o cartão</option>';
 
-            // Simular salvamento na planilha
-            mostrarStatus(`Cartão ${nome} adicionado com sucesso!`, 'success');
-            
-            // Limpar formulário
+            cartoes.forEach(cartao => {
+                const option = document.createElement('option');
+                option.value = cartao.nome;
+                option.textContent = cartao.nome;
+                selectCartao.appendChild(option);
+            });
+        }
+
+        function limparFormularioCartao() {
             document.getElementById('nomeCartao').value = '';
             document.getElementById('diaFechamento').value = '';
             document.getElementById('diaVencimento').value = '';
             document.getElementById('limiteCartao').value = '';
-        }
-
-        function excluirCartao(botao) {
-            if (confirm('Tem certeza que deseja excluir este cartão?')) {
-                const row = botao.closest('tr');
-                const nomeCartao = row.cells[0].textContent;
-                
-                // Remover da tabela
-                row.remove();
-                
-                // Remover do select
-                const selectCartao = document.getElementById('cartaoCompra');
-                const optionToRemove = selectCartao.querySelector(`option[value="${nomeCartao}"]`);
-                if (optionToRemove) optionToRemove.remove();
-                
-                // Remover do filtro
-                const filtroCartao = document.getElementById('filtroCartao');
-                const optionFiltroToRemove = filtroCartao.querySelector(`option[value="${nomeCartao}"]`);
-                if (optionFiltroToRemove) optionFiltroToRemove.remove();
-                
-                mostrarStatus(`Cartão ${nomeCartao} removido!`, 'success');
-            }
+            document.getElementById('observacoesCartao').value = '';
         }
 
         function adicionarCompra() {
-            if (!isConnected) {
-                mostrarStatus('Conecte-se primeiro à planilha!', 'error');
+            const tipoCompra = document.getElementById('tipoCompra').value;
+            const cartao = tipoCompra === 'financiamento' ? 'Financiamento' : document.getElementById('cartao').value;
+            const dataCompra = document.getElementById('dataCompra').value;
+            const descricao = document.getElementById('descricao').value;
+            const categoria = document.getElementById('categoria').value;
+            const valorTotal = parseFloat(document.getElementById('valorTotal').value);
+            const parcelas = parseInt(document.getElementById('parcelas').value);
+            const observacoes = document.getElementById('observacoes').value;
+
+            // Validação específica por tipo
+            if (tipoCompra === 'normal' && !cartao) {
+                alert('Por favor, selecione um cartão para compras normais!');
                 return;
             }
 
-            const cartao = document.getElementById('cartaoCompra').value;
-            const data = document.getElementById('dataCompra').value;
-            const descricao = document.getElementById('descricaoCompra').value.trim();
-            const categoria = document.getElementById('categoriaCompra').value;
-            const valor = parseFloat(document.getElementById('valorCompra').value);
-            const parcelas = parseInt(document.getElementById('parcelasCompra').value);
-
-            if (!cartao || !data || !descricao || !valor || !parcelas) {
-                mostrarStatus('Preencha todos os campos da compra!', 'error');
+            if (!dataCompra || !descricao || !valorTotal || !parcelas) {
+                alert('Por favor, preencha todos os campos obrigatórios!');
                 return;
             }
 
-            const valorParcela = valor / parcelas;
+            const compra = {
+                id: Date.now(),
+                cartao,
+                dataCompra,
+                descricao,
+                categoria,
+                valorTotal,
+                parcelas,
+                valorParcela: valorTotal / parcelas,
+                observacoes,
+                tipoCompra
+            };
 
-            // Adicionar à tabela de compras
+            // Se for financiamento, adicionar dados específicos
+            if (tipoCompra === 'financiamento') {
+                compra.valorFinanciado = parseFloat(document.getElementById('valorFinanciado').value) || 0;
+                compra.taxaJuros = parseFloat(document.getElementById('taxaJuros').value) || 0;
+                compra.tipoFinanciamento = document.getElementById('tipoFinanciamento').value;
+                compra.entrada = parseFloat(document.getElementById('entrada').value) || 0;
+            }
+
+            compras.push(compra);
+            atualizarTabelaCompras();
+            limparFormulario();
+            atualizarFiltroCartoes();
+        }
+
+        function atualizarTabelaCompras() {
             const tbody = document.getElementById('tabelaCompras');
-            const row = tbody.insertRow(0); // Adicionar no topo
-            row.innerHTML = `
-                <td>${new Date(data + 'T00:00:00').toLocaleDateString('pt-BR')}</td>
-                <td>${cartao}</td>
-                <td>${descricao}</td>
-                <td>${categoria}</td>
-                <td class="currency">R$ ${valor.toFixed(2).replace('.', ',')}</td>
-                <td>${parcelas}x</td>
-                <td class="currency">R$ ${valorParcela.toFixed(2).replace('.', ',')}</td>
-            `;
+            tbody.innerHTML = '';
 
-            // Simular salvamento na planilha
-            mostrarStatus(`Compra registrada: ${descricao} - R$ ${valor.toFixed(2)}`, 'success');
+            compras.forEach(compra => {
+                const row = tbody.insertRow();
+                const tipoIcon = compra.tipoCompra === 'financiamento' ? '💰' : '';
+                const categoriaDisplay = compra.categoria ? `${tipoIcon} ${compra.categoria}` : '-';
+                
+                row.innerHTML = `
+                    <td>${new Date(compra.dataCompra + 'T00:00:00').toLocaleDateString('pt-BR')}</td>
+                    <td>${compra.cartao}</td>
+                    <td>${compra.descricao}${compra.tipoCompra === 'financiamento' ? ' (Financiamento)' : ''}</td>
+                    <td>${categoriaDisplay}</td>
+                    <td class="currency">R$ ${compra.valorTotal.toFixed(2).replace('.', ',')}</td>
+                    <td>${compra.parcelas}x</td>
+                    <td class="currency">R$ ${compra.valorParcela.toFixed(2).replace('.', ',')}</td>
+                    <td>
+                        <button class="btn btn-danger" onclick="excluirCompra(${compra.id})">
+                            🗑️
+                        </button>
+                    </td>
+                `;
+            });
+        }
+
+        function excluirCompra(id) {
+            if (confirm('Tem certeza que deseja excluir esta compra?')) {
+                compras = compras.filter(compra => compra.id !== id);
+                atualizarTabelaCompras();
+                atualizarFiltroCartoes();
+                atualizarVisualizacao();
+            }
+        }
+
+        function limparFormulario() {
+            document.getElementById('tipoCompra').value = 'normal';
+            document.getElementById('cartao').value = '';
+            document.getElementById('descricao').value = '';
+            document.getElementById('categoria').value = '';
+            document.getElementById('valorTotal').value = '';
+            document.getElementById('parcelas').value = '1';
+            document.getElementById('observacoes').value = '';
             
-            // Limpar formulário
-            document.getElementById('cartaoCompra').value = '';
-            document.getElementById('descricaoCompra').value = '';
-            document.getElementById('valorCompra').value = '';
-            document.getElementById('parcelasCompra').value = '1';
-            document.getElementById('dataCompra').value = new Date().toISOString().split('T')[0];
+            // Resetar interface
+            document.getElementById('secaoFinanciamento').style.display = 'none';
+            document.getElementById('grupoCartao').style.display = 'block';
+            document.getElementById('cartao').setAttribute('required', 'required');
+            document.getElementById('labelDescricao').textContent = 'Descrição da Compra';
+            document.getElementById('labelValorTotal').textContent = 'Valor Total (R$)';
+            
+            // Recarregar opções de parcelas para compra normal
+            carregarOpcoesParcelas('normal');
+            
+            // Limpar campos de financiamento
+            document.getElementById('valorFinanciado').value = '';
+            document.getElementById('taxaJuros').value = '';
+            document.getElementById('tipoFinanciamento').value = '';
+            document.getElementById('entrada').value = '';
         }
 
         function preencherMeses() {
-            const select = document.getElementById('filtroMes');
-            const hoje = new Date();
+            const selectMes = document.getElementById('filtroMes');
+            selectMes.innerHTML = '';
             
-            select.innerHTML = '<option value="">Selecione o mês</option>';
+            const dataAtual = new Date();
             
             for (let i = -6; i <= 12; i++) {
-                const data = new Date(hoje.getFullYear(), hoje.getMonth() + i, 1);
+                const data = new Date(dataAtual.getFullYear(), dataAtual.getMonth() + i, 1);
                 const mesAno = `${String(data.getMonth() + 1).padStart(2, '0')}/${data.getFullYear()}`;
                 const nomesMes = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
                                'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
@@ -779,31 +828,133 @@
                 option.value = mesAno;
                 option.textContent = nomeCompleto;
                 
-                if (i === 1) { // Próximo mês como padrão
+                if (i === 1) { // Próximo mês como padrão (primeira parcela)
                     option.selected = true;
                 }
                 
-                select.appendChild(option);
+                selectMes.appendChild(option);
             }
         }
 
-        function atualizarResumo() {
+        function atualizarFiltroCartoes() {
+            const selectCartao = document.getElementById('filtroCartao');
+            const cartoesUnicos = [...new Set(compras.map(compra => compra.cartao))];
+            
+            // Manter a opção "Todos os cartões"
+            selectCartao.innerHTML = '<option value="">Todos os cartões</option>';
+            
+            cartoesUnicos.forEach(cartao => {
+                const option = document.createElement('option');
+                option.value = cartao;
+                option.textContent = cartao;
+                selectCartao.appendChild(option);
+            });
+        }
+
+        function calcularPrimeiraParcela(dataCompra, nomeCartao) {
+            // Para financiamentos, usar sempre o próximo mês
+            if (nomeCartao === 'Financiamento') {
+                const data = new Date(dataCompra + 'T00:00:00');
+                return new Date(data.getFullYear(), data.getMonth() + 1, 1);
+            }
+
+            const cartao = cartoes.find(c => c.nome === nomeCartao);
+            if (!cartao) {
+                // Fallback para fechamento no dia 1 se cartão não encontrado
+                const data = new Date(dataCompra + 'T00:00:00');
+                return new Date(data.getFullYear(), data.getMonth() + 1, 1);
+            }
+
+            const data = new Date(dataCompra + 'T00:00:00');
+            const diaCompra = data.getDate();
+            const diaFechamento = cartao.fechamento;
+            
+            let mesReferencia;
+            if (diaCompra <= diaFechamento) {
+                // Compra entra na fatura do mês atual
+                mesReferencia = new Date(data.getFullYear(), data.getMonth() + 1, 1);
+            } else {
+                // Compra entra na fatura do próximo mês
+                mesReferencia = new Date(data.getFullYear(), data.getMonth() + 2, 1);
+            }
+            
+            return mesReferencia;
+        }
+
+        function atualizarVisualizacao() {
             const cartaoFiltro = document.getElementById('filtroCartao').value;
             const mesFiltro = document.getElementById('filtroMes').value;
             
             if (!mesFiltro) {
-                document.getElementById('totalGastos').textContent = 'R$ 0,00';
-                document.getElementById('infoResumo').textContent = 'Selecione um período';
-                document.getElementById('tabelaResumo').innerHTML = '';
+                document.getElementById('totalPagar').textContent = 'R$ 0,00';
+                document.getElementById('periodoInfo').textContent = 'Selecione um período para visualizar';
+                document.getElementById('detalhesGastos').innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size: 48px; margin-bottom: 20px;">📊</div>
+                        <p>Selecione um cartão e mês para ver os detalhes dos gastos</p>
+                    </div>
+                `;
                 return;
             }
 
-            // Simular cálculo de gastos
+            const [mes, ano] = mesFiltro.split('/').map(Number);
             let total = 0;
-            const tbody = document.getElementById('tabelaResumo');
-            tbody.innerHTML = '';
+            let detalhes = [];
 
-            // Exemplo de dados (em uma implementação real, viriam da planilha)
-            const exemplos = [
-                { descricao: 'Netflix', cartao: 'Nubank', parcela: '1/1', valor: 29.90 },
-                { descricao: 'Supermercado', cartao: 'Inter', parcela: '1/3', valor: 150.00
+            compras.forEach(compra => {
+                // Verificar se o cartão corresponde ao filtro
+                if (cartaoFiltro && compra.cartao !== cartaoFiltro) {
+                    return;
+                }
+
+                // Calcular primeira parcela baseada no fechamento do cartão
+                const primeiraParcela = calcularPrimeiraParcela(compra.dataCompra, compra.cartao);
+                
+                // Verificar todas as parcelas da compra
+                for (let parcela = 1; parcela <= compra.parcelas; parcela++) {
+                    const dataParcela = new Date(primeiraParcela.getFullYear(), primeiraParcela.getMonth() + (parcela - 1), 1);
+                    
+                    if (dataParcela.getMonth() + 1 === mes && dataParcela.getFullYear() === ano) {
+                        total += compra.valorParcela;
+                        const tipoDisplay = compra.tipoCompra === 'financiamento' ? '💰 ' : '';
+                        detalhes.push({
+                            descricao: `${tipoDisplay}${compra.descricao} (${parcela}ª de ${compra.parcelas} parcelas)`,
+                            valor: compra.valorParcela,
+                            cartao: compra.cartao
+                        });
+                    }
+                }
+            });
+
+            // Atualizar interface
+            document.getElementById('totalPagar').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+            
+            const nomesMes = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
+                           'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            const nomeCartao = cartaoFiltro || 'Todos os cartões';
+            document.getElementById('periodoInfo').textContent = `${nomeCartao} - ${nomesMes[mes-1]} ${ano}`;
+
+            // Mostrar detalhes
+            const detalhesContainer = document.getElementById('detalhesGastos');
+            if (detalhes.length === 0) {
+                detalhesContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div style="font-size: 48px; margin-bottom: 20px;">🤷‍♂️</div>
+                        <p>Nenhum gasto encontrado para este período</p>
+                    </div>
+                `;
+            } else {
+                detalhesContainer.innerHTML = detalhes.map(detalhe => `
+                    <div class="detail-item">
+                        <div class="detail-description">
+                            ${detalhe.descricao}
+                            ${cartaoFiltro ? '' : `<br><small style="color: #6b7280;">${detalhe.cartao}</small>`}
+                        </div>
+                        <div class="detail-value">R$ ${detalhe.valor.toFixed(2).replace('.', ',')}</div>
+                    </div>
+                `).join('');
+            }
+        }
+    </script>
+</body>
+</html>
