@@ -746,7 +746,7 @@
         let compras = [];
         let cartoes = [];
 
-        // Sistema de persistência de dados
+        // Sistema de persistência de dados usando localStorage
         class DataManager {
             static getStorageKey(usuario, tipo) {
                 return `gastos_${usuario.toLowerCase().replace(/\s+/g, '_')}_${tipo}`;
@@ -755,15 +755,27 @@
             static salvarDados(usuario, tipo, dados) {
                 try {
                     const key = this.getStorageKey(usuario, tipo);
-                    const dataToStore = { data: dados, timestamp: new Date().getTime() };
-                    const data = JSON.stringify(dataToStore);
+                    const dataToStore = { 
+                        data: dados, 
+                        timestamp: new Date().getTime(),
+                        usuario: usuario,
+                        versao: '1.0' // Para futuras migrações
+                    };
+                    const dataString = JSON.stringify(dataToStore);
+                    localStorage.setItem(key, dataString);
                     
-                    // Usar variável global para simular localStorage
-                    if (!window.appStorage) window.appStorage = {};
-                    window.appStorage[key] = data;
+                    // Log para debug
+                    console.log(`Dados salvos: ${key}`, dados);
                     return true;
                 } catch (error) {
                     console.error('Erro ao salvar dados:', error);
+                    
+                    // Verificar se o erro é por falta de espaço
+                    if (error.name === 'QuotaExceededError' || error.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        mostrarStatus('statusCompra', 'Erro: Espaço de armazenamento local esgotado! Considere exportar seus dados.', 'error');
+                    } else {
+                        mostrarStatus('statusCompra', 'Erro ao salvar dados localmente.', 'error');
+                    }
                     return false;
                 }
             }
@@ -771,39 +783,152 @@
             static carregarDados(usuario, tipo) {
                 try {
                     const key = this.getStorageKey(usuario, tipo);
-                    
-                    // Usar variável global para simular localStorage
-                    if (!window.appStorage) window.appStorage = {};
-                    const dados = window.appStorage[key];
+                    const dados = localStorage.getItem(key);
                     
                     if (dados) {
                         const parsed = JSON.parse(dados);
+                        
+                        // Log para debug
+                        console.log(`Dados carregados: ${key}`, parsed.data || parsed);
+                        
                         return parsed.data || parsed; // Compatibilidade com formato anterior
                     }
                     return null;
                 } catch (error) {
                     console.error('Erro ao carregar dados:', error);
+                    mostrarStatus('statusCompra', 'Erro ao carregar dados locais.', 'error');
                     return null;
                 }
             }
 
             static verificarUsuario(nome, senha = '') {
-                if (!window.appStorage) window.appStorage = {};
-                const usuarios = JSON.parse(window.appStorage['usuarios_cadastrados'] || '{}');
-                const usuarioKey = nome.toLowerCase().replace(/\s+/g, '_');
-                
-                if (usuarios[usuarioKey]) {
-                    // Usuário existe, verificar senha se foi definida
-                    if (usuarios[usuarioKey].senha && usuarios[usuarioKey].senha !== senha) {
-                        return { sucesso: false, mensagem: 'Senha incorreta!' };
+                try {
+                    const usuarios = JSON.parse(localStorage.getItem('usuarios_cadastrados') || '{}');
+                    const usuarioKey = nome.toLowerCase().replace(/\s+/g, '_');
+                    
+                    if (usuarios[usuarioKey]) {
+                        // Usuário existe, verificar senha se foi definida
+                        if (usuarios[usuarioKey].senha && usuarios[usuarioKey].senha !== senha) {
+                            return { sucesso: false, mensagem: 'Senha incorreta!' };
+                        }
+                        return { sucesso: true, usuario: usuarios[usuarioKey] };
+                    } else {
+                        // Novo usuário
+                        const novoUsuario = { 
+                            nome, 
+                            senha, 
+                            dataCriacao: new Date().toISOString(),
+                            ultimoLogin: new Date().toISOString()
+                        };
+                        usuarios[usuarioKey] = novoUsuario;
+                        localStorage.setItem('usuarios_cadastrados', JSON.stringify(usuarios));
+                        
+                        console.log('Novo usuário criado:', novoUsuario);
+                        return { sucesso: true, usuario: novoUsuario, novo: true };
                     }
-                    return { sucesso: true, usuario: usuarios[usuarioKey] };
-                } else {
-                    // Novo usuário
-                    const novoUsuario = { nome, senha, dataCriacao: new Date().toISOString() };
-                    usuarios[usuarioKey] = novoUsuario;
-                    window.appStorage['usuarios_cadastrados'] = JSON.stringify(usuarios);
-                    return { sucesso: true, usuario: novoUsuario, novo: true };
+                } catch (error) {
+                    console.error('Erro ao verificar usuário:', error);
+                    return { sucesso: false, mensagem: 'Erro interno. Tente novamente.' };
+                }
+            }
+
+            static listarUsuarios() {
+                try {
+                    const usuarios = JSON.parse(localStorage.getItem('usuarios_cadastrados') || '{}');
+                    return Object.values(usuarios);
+                } catch (error) {
+                    console.error('Erro ao listar usuários:', error);
+                    return [];
+                }
+            }
+
+            static exportarDados(usuario) {
+                try {
+                    const compras = this.carregarDados(usuario, 'compras') || [];
+                    const cartoes = this.carregarDados(usuario, 'cartoes') || [];
+                    
+                    const dadosExportacao = {
+                        usuario: usuario,
+                        dataExportacao: new Date().toISOString(),
+                        versao: '1.0',
+                        dados: {
+                            compras,
+                            cartoes
+                        }
+                    };
+                    
+                    return dadosExportacao;
+                } catch (error) {
+                    console.error('Erro ao exportar dados:', error);
+                    return null;
+                }
+            }
+
+            static importarDados(usuario, dadosImportados) {
+                try {
+                    if (dadosImportados.dados) {
+                        if (dadosImportados.dados.compras) {
+                            this.salvarDados(usuario, 'compras', dadosImportados.dados.compras);
+                        }
+                        if (dadosImportados.dados.cartoes) {
+                            this.salvarDados(usuario, 'cartoes', dadosImportados.dados.cartoes);
+                        }
+                        return true;
+                    }
+                    return false;
+                } catch (error) {
+                    console.error('Erro ao importar dados:', error);
+                    return false;
+                }
+            }
+
+            static obterEstatisticasArmazenamento() {
+                try {
+                    let totalSize = 0;
+                    let itemCount = 0;
+                    
+                    for (let key in localStorage) {
+                        if (localStorage.hasOwnProperty(key) && key.startsWith('gastos_')) {
+                            const itemSize = localStorage.getItem(key).length;
+                            totalSize += itemSize;
+                            itemCount++;
+                        }
+                    }
+                    
+                    return {
+                        totalSize: Math.round(totalSize / 1024), // KB
+                        itemCount,
+                        espacoDisponivel: this.obterEspacoDisponivel()
+                    };
+                } catch (error) {
+                    console.error('Erro ao obter estatísticas:', error);
+                    return { totalSize: 0, itemCount: 0, espacoDisponivel: 'Desconhecido' };
+                }
+            }
+
+            static obterEspacoDisponivel() {
+                try {
+                    // Tentar estimar o espaço disponível
+                    let testKey = 'test_storage_space';
+                    let testData = '0'.repeat(1024); // 1KB
+                    let testSize = 0;
+                    
+                    while (testSize < 10240) { // Testar até 10MB
+                        try {
+                            localStorage.setItem(testKey, testData);
+                            localStorage.removeItem(testKey);
+                            testSize += 1024;
+                            testData += '0'.repeat(1024);
+                        } catch (e) {
+                            localStorage.removeItem(testKey);
+                            return Math.round(testSize / 1024) + 'KB+';
+                        }
+                    }
+                    
+                    localStorage.removeItem(testKey);
+                    return '10MB+';
+                } catch (error) {
+                    return 'Não disponível';
                 }
             }
         }
@@ -823,6 +948,19 @@
             
             if (resultado.sucesso) {
                 usuarioAtual = resultado.usuario;
+                
+                // Atualizar último login
+                if (!resultado.novo) {
+                    try {
+                        const usuarios = JSON.parse(localStorage.getItem('usuarios_cadastrados') || '{}');
+                        const usuarioKey = nome.toLowerCase().replace(/\s+/g, '_');
+                        usuarios[usuarioKey].ultimoLogin = new Date().toISOString();
+                        localStorage.setItem('usuarios_cadastrados', JSON.stringify(usuarios));
+                    } catch (error) {
+                        console.error('Erro ao atualizar último login:', error);
+                    }
+                }
+                
                 document.getElementById('nomeUsuarioLogado').textContent = usuarioAtual.nome;
                 
                 // Carregar dados do usuário
@@ -833,7 +971,7 @@
                 document.getElementById('mainApp').style.display = 'block';
                 
                 const mensagem = resultado.novo ? 
-                    'Bem-vindo! Sua conta foi criada com sucesso!' : 
+                    'Bem-vindo! Sua conta foi criada com sucesso! Os dados serão salvos localmente no seu navegador.' : 
                     'Login realizado com sucesso!';
                 setTimeout(() => mostrarStatus('statusCompra', mensagem, 'success'), 500);
                 
@@ -843,7 +981,14 @@
         }
 
         function fazerLogout() {
-            if (confirm('Tem certeza que deseja sair?')) {
+            if (confirm('Tem certeza que deseja sair? Seus dados ficarão salvos localmente.')) {
+                // Salvar último usuário para facilitar próximo login
+                try {
+                    localStorage.setItem('ultimo_usuario_logado', usuarioAtual.nome);
+                } catch (error) {
+                    console.error('Erro ao salvar último usuário:', error);
+                }
+                
                 usuarioAtual = null;
                 compras = [];
                 cartoes = [];
@@ -859,6 +1004,8 @@
         }
 
         function carregarDadosUsuario() {
+            if (!usuarioAtual) return;
+            
             // Carregar compras
             const comprasCarregadas = DataManager.carregarDados(usuarioAtual.nome, 'compras');
             compras = comprasCarregadas || [];
@@ -866,9 +1013,9 @@
             // Carregar cartões (ou usar padrão para novos usuários)
             const cartoesCarregados = DataManager.carregarDados(usuarioAtual.nome, 'cartoes');
             cartoes = cartoesCarregados || [
-                { id: 1, nome: "Nubank", fechamento: 1, vencimento: 10, limite: 0, observacoes: "" },
-                { id: 2, nome: "Inter", fechamento: 15, vencimento: 25, limite: 0, observacoes: "" },
-                { id: 3, nome: "C6 Bank", fechamento: 5, vencimento: 15, limite: 0, observacoes: "" }
+                { id: 1, nome: "Nubank", fechamento: 1, vencimento: 10, limite: 0, observacoes: "Cartão padrão" },
+                { id: 2, nome: "Inter", fechamento: 15, vencimento: 25, limite: 0, observacoes: "Cartão padrão" },
+                { id: 3, nome: "C6 Bank", fechamento: 5, vencimento: 15, limite: 0, observacoes: "Cartão padrão" }
             ];
             
             // Salvar cartões padrão se for novo usuário
@@ -876,15 +1023,27 @@
                 DataManager.salvarDados(usuarioAtual.nome, 'cartoes', cartoes);
             }
             
+            console.log(`Dados carregados para ${usuarioAtual.nome}:`, {
+                compras: compras.length,
+                cartoes: cartoes.length
+            });
+            
             // Atualizar interface
             atualizarInterface();
         }
 
         function salvarDadosUsuario() {
             if (usuarioAtual) {
-                DataManager.salvarDados(usuarioAtual.nome, 'compras', compras);
-                DataManager.salvarDados(usuarioAtual.nome, 'cartoes', cartoes);
+                const sucessoCompras = DataManager.salvarDados(usuarioAtual.nome, 'compras', compras);
+                const sucessoCartoes = DataManager.salvarDados(usuarioAtual.nome, 'cartoes', cartoes);
+                
+                if (!sucessoCompras || !sucessoCartoes) {
+                    console.warn('Erro ao salvar alguns dados do usuário');
+                }
+                
+                return sucessoCompras && sucessoCartoes;
             }
+            return false;
         }
 
         function mostrarStatus(elementId, mensagem, tipo) {
@@ -892,7 +1051,7 @@
             element.innerHTML = `<div class="status-message ${tipo}">${mensagem}</div>`;
             setTimeout(() => {
                 element.innerHTML = '';
-            }, 3000);
+            }, tipo === 'error' ? 5000 : 3000); // Erros ficam mais tempo na tela
         }
 
         function atualizarInterface() {
@@ -916,12 +1075,23 @@
 
         // Inicialização da página
         document.addEventListener('DOMContentLoaded', function() {
-            // Verificar se há usuário logado (opcional - para auto-login)
-            if (!window.appStorage) window.appStorage = {};
-            const ultimoUsuario = window.appStorage['ultimo_usuario_logado'];
-            if (ultimoUsuario) {
-                document.getElementById('nomeUsuario').value = JSON.parse(ultimoUsuario);
+            console.log('Sistema de Controle de Gastos iniciado');
+            console.log('LocalStorage disponível:', typeof(Storage) !== "undefined");
+            
+            // Verificar se há usuário logado recentemente
+            try {
+                const ultimoUsuario = localStorage.getItem('ultimo_usuario_logado');
+                if (ultimoUsuario) {
+                    document.getElementById('nomeUsuario').value = ultimoUsuario;
+                    console.log('Último usuário carregado:', ultimoUsuario);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar último usuário:', error);
             }
+            
+            // Mostrar estatísticas de armazenamento no console
+            const stats = DataManager.obterEstatisticasArmazenamento();
+            console.log('Estatísticas de armazenamento:', stats);
         });
 
         function carregarOpcoesParcelas(tipoCompra) {
@@ -1021,14 +1191,21 @@
         }
 
         function adicionarCartao() {
-            const nome = document.getElementById('nomeCartao').value;
+            const nome = document.getElementById('nomeCartao').value.trim();
             const fechamento = parseInt(document.getElementById('diaFechamento').value);
             const vencimento = parseInt(document.getElementById('diaVencimento').value);
             const limite = parseFloat(document.getElementById('limiteCartao').value) || 0;
-            const observacoes = document.getElementById('observacoesCartao').value;
+            const observacoes = document.getElementById('observacoesCartao').value.trim();
 
             if (!nome || !fechamento || !vencimento) {
                 mostrarStatus('statusCartao', 'Por favor, preencha todos os campos obrigatórios!', 'error');
+                return;
+            }
+
+            // Verificar se já existe cartão com o mesmo nome
+            const cartaoExistente = cartoes.find(c => c.nome.toLowerCase() === nome.toLowerCase());
+            if (cartaoExistente) {
+                mostrarStatus('statusCartao', 'Já existe um cartão com este nome!', 'error');
                 return;
             }
 
@@ -1038,32 +1215,71 @@
                 fechamento,
                 vencimento,
                 limite,
-                observacoes
+                observacoes,
+                dataCriacao: new Date().toISOString()
             };
 
             cartoes.push(cartao);
-            salvarDadosUsuario(); // Salvar dados
-            atualizarTabelaCartoes();
-            carregarCartoes();
-            limparFormularioCartao();
-            configurarFiltrosRelatorio(); // Atualizar filtros de relatório
-            mostrarStatus('statusCartao', 'Cartão adicionado com sucesso!', 'success');
+            
+            if (salvarDadosUsuario()) {
+                atualizarTabelaCartoes();
+                carregarCartoes();
+                limparFormularioCartao();
+                configurarFiltrosRelatorio();
+                mostrarStatus('statusCartao', 'Cartão adicionado com sucesso!', 'success');
+                console.log('Cartão adicionado:', cartao);
+            } else {
+                // Remover da lista se não conseguiu salvar
+                cartoes.pop();
+                mostrarStatus('statusCartao', 'Erro ao salvar o cartão!', 'error');
+            }
         }
 
         function excluirCartao(id) {
-            if (confirm('Tem certeza que deseja excluir este cartão?')) {
-                cartoes = cartoes.filter(cartao => cartao.id !== id);
-                salvarDadosUsuario(); // Salvar dados
-                atualizarTabelaCartoes();
-                carregarCartoes();
-                configurarFiltrosRelatorio(); // Atualizar filtros de relatório
-                mostrarStatus('statusCartao', 'Cartão excluído com sucesso!', 'success');
+            const cartao = cartoes.find(c => c.id === id);
+            if (!cartao) {
+                mostrarStatus('statusCartao', 'Cartão não encontrado!', 'error');
+                return;
+            }
+
+            // Verificar se há compras vinculadas a este cartão
+            const comprasVinculadas = compras.filter(c => c.cartao === cartao.nome);
+            
+            let mensagem = 'Tem certeza que deseja excluir este cartão?';
+            if (comprasVinculadas.length > 0) {
+                mensagem += `\n\nAtenção: Existem ${comprasVinculadas.length} compra(s) vinculada(s) a este cartão.`;
+            }
+
+            if (confirm(mensagem)) {
+                cartoes = cartoes.filter(c => c.id !== id);
+                
+                if (salvarDadosUsuario()) {
+                    atualizarTabelaCartoes();
+                    carregarCartoes();
+                    configurarFiltrosRelatorio();
+                    mostrarStatus('statusCartao', 'Cartão excluído com sucesso!', 'success');
+                    console.log('Cartão excluído:', cartao);
+                } else {
+                    // Restaurar se não conseguiu salvar
+                    cartoes.push(cartao);
+                    mostrarStatus('statusCartao', 'Erro ao salvar alterações!', 'error');
+                }
             }
         }
 
         function atualizarTabelaCartoes() {
             const tbody = document.getElementById('tabelaCartoes');
             tbody.innerHTML = '';
+
+            if (cartoes.length === 0) {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td colspan="6" style="text-align: center; color: #6b7280; padding: 30px;">
+                        Nenhum cartão cadastrado. Adicione seu primeiro cartão acima.
+                    </td>
+                `;
+                return;
+            }
 
             cartoes.forEach(cartao => {
                 const row = tbody.insertRow();
@@ -1074,7 +1290,7 @@
                     <td class="currency">${cartao.limite > 0 ? `R$ ${cartao.limite.toFixed(2).replace('.', ',')}` : 'Não informado'}</td>
                     <td>${cartao.observacoes || '-'}</td>
                     <td>
-                        <button class="btn btn-danger" onclick="excluirCartao(${cartao.id})">
+                        <button class="btn btn-danger" onclick="excluirCartao(${cartao.id})" title="Excluir cartão">
                             🗑️
                         </button>
                     </td>
@@ -1106,11 +1322,11 @@
             const tipoCompra = document.getElementById('tipoCompra').value;
             const cartao = tipoCompra === 'financiamento' ? 'Financiamento' : document.getElementById('cartao').value;
             const dataCompra = document.getElementById('dataCompra').value;
-            const descricao = document.getElementById('descricao').value;
+            const descricao = document.getElementById('descricao').value.trim();
             const categoria = document.getElementById('categoria').value;
             const valorTotal = parseFloat(document.getElementById('valorTotal').value);
             const parcelas = parseInt(document.getElementById('parcelas').value);
-            const observacoes = document.getElementById('observacoes').value;
+            const observacoes = document.getElementById('observacoes').value.trim();
 
             // Validação específica por tipo
             if (tipoCompra === 'normal' && !cartao) {
@@ -1123,17 +1339,28 @@
                 return;
             }
 
+            if (valorTotal <= 0) {
+                mostrarStatus('statusCompra', 'O valor deve ser maior que zero!', 'error');
+                return;
+            }
+
+            if (parcelas <= 0) {
+                mostrarStatus('statusCompra', 'O número de parcelas deve ser maior que zero!', 'error');
+                return;
+            }
+
             const compra = {
                 id: Date.now(),
                 cartao,
                 dataCompra,
                 descricao,
-                categoria,
+                categoria: categoria || 'Outros',
                 valorTotal,
                 parcelas,
                 valorParcela: valorTotal / parcelas,
                 observacoes,
-                tipoCompra
+                tipoCompra,
+                dataCriacao: new Date().toISOString()
             };
 
             // Se for financiamento, adicionar dados específicos
@@ -1151,18 +1378,44 @@
             }
 
             compras.push(compra);
-            salvarDadosUsuario(); // Salvar dados
-            atualizarTabelaCompras();
-            limparFormulario();
-            atualizarFiltroCartoes();
-            mostrarStatus('statusCompra', 'Compra adicionada com sucesso!', 'success');
+            
+            if (salvarDadosUsuario()) {
+                atualizarTabelaCompras();
+                limparFormulario();
+                atualizarFiltroCartoes();
+                mostrarStatus('statusCompra', 'Compra adicionada com sucesso!', 'success');
+                console.log('Compra adicionada:', compra);
+                
+                // Atualizar visualização se estiver na aba ativa
+                const abaAtiva = document.querySelector('.tab-content.active');
+                if (abaAtiva && abaAtiva.id === 'apresentacao') {
+                    atualizarVisualizacao();
+                }
+            } else {
+                // Remover da lista se não conseguiu salvar
+                compras.pop();
+                mostrarStatus('statusCompra', 'Erro ao salvar a compra!', 'error');
+            }
         }
 
         function atualizarTabelaCompras() {
             const tbody = document.getElementById('tabelaCompras');
             tbody.innerHTML = '';
 
-            compras.forEach(compra => {
+            if (compras.length === 0) {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td colspan="8" style="text-align: center; color: #6b7280; padding: 30px;">
+                        Nenhuma compra cadastrada. Adicione sua primeira compra acima.
+                    </td>
+                `;
+                return;
+            }
+
+            // Ordenar compras por data (mais recente primeiro)
+            const comprasOrdenadas = [...compras].sort((a, b) => new Date(b.dataCompra) - new Date(a.dataCompra));
+
+            comprasOrdenadas.forEach(compra => {
                 const row = tbody.insertRow();
                 const tipoIcon = compra.tipoCompra === 'financiamento' ? '💰' : '';
                 const categoriaDisplay = compra.categoria ? `${tipoIcon} ${compra.categoria}` : '-';
@@ -1170,13 +1423,15 @@
                 row.innerHTML = `
                     <td>${new Date(compra.dataCompra + 'T00:00:00').toLocaleDateString('pt-BR')}</td>
                     <td>${compra.cartao}</td>
-                    <td>${compra.descricao}${compra.tipoCompra === 'financiamento' ? ' (Financiamento)' : ''}</td>
+                    <td>${compra.descricao}${compra.tipoCompra === 'financiamento' ? ' (Financiamento)' : ''}
+                        ${compra.observacoes ? `<br><small style="color: #6b7280;">${compra.observacoes}</small>` : ''}
+                    </td>
                     <td>${categoriaDisplay}</td>
                     <td class="currency">R$ ${compra.valorTotal.toFixed(2).replace('.', ',')}</td>
                     <td>${compra.parcelas}x</td>
                     <td class="currency">R$ ${compra.valorParcela.toFixed(2).replace('.', ',')}</td>
                     <td>
-                        <button class="btn btn-danger" onclick="excluirCompra(${compra.id})">
+                        <button class="btn btn-danger" onclick="excluirCompra(${compra.id})" title="Excluir compra">
                             🗑️
                         </button>
                     </td>
@@ -1185,13 +1440,26 @@
         }
 
         function excluirCompra(id) {
-            if (confirm('Tem certeza que deseja excluir esta compra?')) {
-                compras = compras.filter(compra => compra.id !== id);
-                salvarDadosUsuario(); // Salvar dados
-                atualizarTabelaCompras();
-                atualizarFiltroCartoes();
-                atualizarVisualizacao();
-                mostrarStatus('statusCompra', 'Compra excluída com sucesso!', 'success');
+            const compra = compras.find(c => c.id === id);
+            if (!compra) {
+                mostrarStatus('statusCompra', 'Compra não encontrada!', 'error');
+                return;
+            }
+
+            if (confirm(`Tem certeza que deseja excluir a compra "${compra.descricao}"?`)) {
+                compras = compras.filter(c => c.id !== id);
+                
+                if (salvarDadosUsuario()) {
+                    atualizarTabelaCompras();
+                    atualizarFiltroCartoes();
+                    atualizarVisualizacao();
+                    mostrarStatus('statusCompra', 'Compra excluída com sucesso!', 'success');
+                    console.log('Compra excluída:', compra);
+                } else {
+                    // Restaurar se não conseguiu salvar
+                    compras.push(compra);
+                    mostrarStatus('statusCompra', 'Erro ao salvar alterações!', 'error');
+                }
             }
         }
 
@@ -1325,7 +1593,7 @@
             preencherMeses();
         }
 
-// FUNÇÃO CORRIGIDA DO FECHAMENTO
+        // FUNÇÃO CORRIGIDA DO FECHAMENTO
         function calcularPrimeiraParcela(dataCompra, nomeCartao, primeiraParcela = null) {
             // Para financiamentos com data específica, usar a data definida
             if (primeiraParcela) {
@@ -1401,7 +1669,8 @@
                         detalhes.push({
                             descricao: `${tipoDisplay}${compra.descricao} (${parcela}ª de ${compra.parcelas} parcelas)`,
                             valor: compra.valorParcela,
-                            cartao: compra.cartao
+                            cartao: compra.cartao,
+                            categoria: compra.categoria
                         });
                     }
                 }
@@ -1425,11 +1694,15 @@
                     </div>
                 `;
             } else {
+                // Ordenar detalhes por valor (maior primeiro)
+                detalhes.sort((a, b) => b.valor - a.valor);
+                
                 detalhesContainer.innerHTML = detalhes.map(detalhe => `
                     <div class="detail-item">
                         <div class="detail-description">
                             ${detalhe.descricao}
                             ${cartaoFiltro ? '' : `<br><small style="color: #6b7280;">${detalhe.cartao}</small>`}
+                            ${detalhe.categoria ? `<br><small style="color: #059669;">${detalhe.categoria}</small>` : ''}
                         </div>
                         <div class="detail-value">R$ ${detalhe.valor.toFixed(2).replace('.', ',')}</div>
                     </div>
@@ -1470,11 +1743,16 @@
                 return;
             }
 
+            if (new Date(dataInicio) > new Date(dataFim)) {
+                mostrarStatus('statusCompra', 'A data de início deve ser anterior à data de fim!', 'error');
+                return;
+            }
+
             // Filtrar compras no período
             const comprasFiltradas = compras.filter(compra => {
                 const dataCompra = new Date(compra.dataCompra + 'T00:00:00');
                 const inicio = new Date(dataInicio + 'T00:00:00');
-                const fim = new Date(dataFim + 'T00:00:00');
+                const fim = new Date(dataFim + 'T23:59:59');
                 
                 const dentroData = dataCompra >= inicio && dataCompra <= fim;
                 const dentroCartao = !cartaoFiltro || compra.cartao === cartaoFiltro;
@@ -1518,12 +1796,30 @@
             const cartoesOrdenados = Object.entries(relatorioCartoes)
                 .sort(([,a], [,b]) => b.total - a.total);
 
-            container.innerHTML = cartoesOrdenados.map(([cartao, dados]) => `
-                <div class="report-item">
-                    <div class="report-label">${cartao} (${dados.quantidade} compra${dados.quantidade > 1 ? 's' : ''})</div>
-                    <div class="report-value">R$ ${dados.total.toFixed(2).replace('.', ',')}</div>
+            const totalGeral = cartoesOrdenados.reduce((sum, [, dados]) => sum + dados.total, 0);
+
+            let html = cartoesOrdenados.map(([cartao, dados]) => {
+                const percentual = totalGeral > 0 ? ((dados.total / totalGeral) * 100).toFixed(1) : 0;
+                return `
+                    <div class="report-item">
+                        <div class="report-label">
+                            ${cartao} (${dados.quantidade} compra${dados.quantidade > 1 ? 's' : ''})
+                            <br><small style="color: #6b7280;">${percentual}% do total</small>
+                        </div>
+                        <div class="report-value">R$ ${dados.total.toFixed(2).replace('.', ',')}</div>
+                    </div>
+                `;
+            }).join('');
+
+            // Adicionar total geral
+            html += `
+                <div class="report-item" style="border-top: 2px solid #3b82f6; margin-top: 10px; padding-top: 15px;">
+                    <div class="report-label" style="font-weight: bold;">Total Geral</div>
+                    <div class="report-value" style="color: #3b82f6; font-size: 20px;">R$ ${totalGeral.toFixed(2).replace('.', ',')}</div>
                 </div>
-            `).join('');
+            `;
+
+            container.innerHTML = html;
         }
 
         function gerarRelatorioCategorias(comprasFiltradas) {
@@ -1552,12 +1848,30 @@
             const categoriasOrdenadas = Object.entries(relatorioCategorias)
                 .sort(([,a], [,b]) => b.total - a.total);
 
-            container.innerHTML = categoriasOrdenadas.map(([categoria, dados]) => `
-                <div class="report-item">
-                    <div class="report-label">${categoria} (${dados.quantidade} compra${dados.quantidade > 1 ? 's' : ''})</div>
-                    <div class="report-value">R$ ${dados.total.toFixed(2).replace('.', ',')}</div>
+            const totalGeral = categoriasOrdenadas.reduce((sum, [, dados]) => sum + dados.total, 0);
+
+            let html = categoriasOrdenadas.map(([categoria, dados]) => {
+                const percentual = totalGeral > 0 ? ((dados.total / totalGeral) * 100).toFixed(1) : 0;
+                return `
+                    <div class="report-item">
+                        <div class="report-label">
+                            ${categoria} (${dados.quantidade} compra${dados.quantidade > 1 ? 's' : ''})
+                            <br><small style="color: #6b7280;">${percentual}% do total</small>
+                        </div>
+                        <div class="report-value">R$ ${dados.total.toFixed(2).replace('.', ',')}</div>
+                    </div>
+                `;
+            }).join('');
+
+            // Adicionar total geral
+            html += `
+                <div class="report-item" style="border-top: 2px solid #3b82f6; margin-top: 10px; padding-top: 15px;">
+                    <div class="report-label" style="font-weight: bold;">Total Geral</div>
+                    <div class="report-value" style="color: #3b82f6; font-size: 20px;">R$ ${totalGeral.toFixed(2).replace('.', ',')}</div>
                 </div>
-            `).join('');
+            `;
+
+            container.innerHTML = html;
         }
 
         function gerarRelatorioMensal(comprasFiltradas) {
@@ -1591,21 +1905,201 @@
             const mesesOrdenados = Object.entries(relatorioMensal)
                 .sort(([,a], [,b]) => a.ordenacao - b.ordenacao);
 
-            container.innerHTML = mesesOrdenados.map(([mesAno, dados]) => `
-                <div class="report-item">
-                    <div class="report-label">${mesAno} (${dados.quantidade} compra${dados.quantidade > 1 ? 's' : ''})</div>
-                    <div class="report-value">R$ ${dados.total.toFixed(2).replace('.', ',')}</div>
+            const totalGeral = mesesOrdenados.reduce((sum, [, dados]) => sum + dados.total, 0);
+            const mediaGeral = totalGeral / mesesOrdenados.length;
+
+            let html = mesesOrdenados.map(([mesAno, dados]) => {
+                const percentual = totalGeral > 0 ? ((dados.total / totalGeral) * 100).toFixed(1) : 0;
+                const comparacaoMedia = dados.total > mediaGeral ? '↑' : dados.total < mediaGeral ? '↓' : '→';
+                const corComparacao = dados.total > mediaGeral ? '#ef4444' : dados.total < mediaGeral ? '#059669' : '#6b7280';
+                
+                return `
+                    <div class="report-item">
+                        <div class="report-label">
+                            ${mesAno} (${dados.quantidade} compra${dados.quantidade > 1 ? 's' : ''})
+                            <br><small style="color: #6b7280;">
+                                ${percentual}% do total 
+                                <span style="color: ${corComparacao};">${comparacaoMedia}</span>
+                            </small>
+                        </div>
+                        <div class="report-value">R$ ${dados.total.toFixed(2).replace('.', ',')}</div>
+                    </div>
+                `;
+            }).join('');
+
+            // Adicionar estatísticas gerais
+            html += `
+                <div class="report-item" style="border-top: 2px solid #3b82f6; margin-top: 10px; padding-top: 15px;">
+                    <div class="report-label" style="font-weight: bold;">
+                        Total Geral
+                        <br><small style="color: #6b7280;">Média mensal: R$ ${mediaGeral.toFixed(2).replace('.', ',')}</small>
+                    </div>
+                    <div class="report-value" style="color: #3b82f6; font-size: 20px;">R$ ${totalGeral.toFixed(2).replace('.', ',')}</div>
                 </div>
-            `).join('');
+            `;
+
+            container.innerHTML = html;
         }
 
-        // Salvar último usuário para facilitar próximo login
-        window.addEventListener('beforeunload', function() {
-            if (usuarioAtual) {
-                if (!window.appStorage) window.appStorage = {};
-                window.appStorage['ultimo_usuario_logado'] = JSON.stringify(usuarioAtual.nome);
+        // Funções utilitárias para exportar/importar dados
+        function exportarDadosUsuario() {
+            if (!usuarioAtual) {
+                mostrarStatus('statusCompra', 'Nenhum usuário logado!', 'error');
+                return;
+            }
+
+            const dados = DataManager.exportarDados(usuarioAtual.nome);
+            if (!dados) {
+                mostrarStatus('statusCompra', 'Erro ao exportar dados!', 'error');
+                return;
+            }
+
+            const dataStr = JSON.stringify(dados, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `gastos_${usuarioAtual.nome.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            URL.revokeObjectURL(url);
+            mostrarStatus('statusCompra', 'Dados exportados com sucesso!', 'success');
+        }
+
+        function importarDadosUsuario(event) {
+            if (!usuarioAtual) {
+                mostrarStatus('statusCompra', 'Nenhum usuário logado!', 'error');
+                return;
+            }
+
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const dadosImportados = JSON.parse(e.target.result);
+                    
+                    if (DataManager.importarDados(usuarioAtual.nome, dadosImportados)) {
+                        carregarDadosUsuario();
+                        mostrarStatus('statusCompra', 'Dados importados com sucesso!', 'success');
+                    } else {
+                        mostrarStatus('statusCompra', 'Erro ao importar dados! Verifique o formato do arquivo.', 'error');
+                    }
+                } catch (error) {
+                    console.error('Erro ao importar:', error);
+                    mostrarStatus('statusCompra', 'Arquivo inválido!', 'error');
+                }
+            };
+            
+            reader.readAsText(file);
+            event.target.value = ''; // Limpar input
+        }
+
+        // Event listeners para atalhos de teclado
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + S para exportar dados
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                if (usuarioAtual) {
+                    exportarDadosUsuario();
+                }
+            }
+            
+            // Enter na tela de login
+            if (document.getElementById('loginScreen').style.display !== 'none') {
+                if (e.key === 'Enter') {
+                    fazerLogin();
+                }
             }
         });
+
+        // Backup automático (opcional)
+        function backupAutomatico() {
+            if (usuarioAtual && compras.length > 0) {
+                try {
+                    const dados = DataManager.exportarDados(usuarioAtual.nome);
+                    localStorage.setItem(`backup_${usuarioAtual.nome}_${new Date().toDateString()}`, JSON.stringify(dados));
+                    
+                    // Manter apenas os últimos 7 backups
+                    const chaves = Object.keys(localStorage).filter(k => k.startsWith(`backup_${usuarioAtual.nome}_`));
+                    if (chaves.length > 7) {
+                        chaves.sort().slice(0, -7).forEach(chave => localStorage.removeItem(chave));
+                    }
+                } catch (error) {
+                    console.warn('Erro no backup automático:', error);
+                }
+            }
+        }
+
+        // Executar backup automático a cada 30 minutos
+        setInterval(backupAutomatico, 30 * 60 * 1000);
+
+        // Salvar dados automaticamente antes de fechar a página
+        window.addEventListener('beforeunload', function(e) {
+            if (usuarioAtual) {
+                salvarDadosUsuario();
+                try {
+                    localStorage.setItem('ultimo_usuario_logado', usuarioAtual.nome);
+                } catch (error) {
+                    console.error('Erro ao salvar último usuário:', error);
+                }
+            }
+        });
+
+        // Verificar espaço de armazenamento periodicamente
+        function verificarEspacoArmazenamento() {
+            const stats = DataManager.obterEstatisticasArmazenamento();
+            
+            // Alerta se estiver usando muito espaço (> 8MB estimado)
+            if (stats.totalSize > 8192) { // 8MB
+                console.warn('Armazenamento local está ficando cheio. Considere exportar os dados.');
+                if (usuarioAtual) {
+                    mostrarStatus('statusCompra', 'Atenção: Espaço de armazenamento local baixo. Considere exportar seus dados.', 'error');
+                }
+            }
+        }
+
+        // Verificar espaço a cada 5 minutos
+        setInterval(verificarEspacoArmazenamento, 5 * 60 * 1000);
+
+        // Função para limpar dados antigos (pode ser chamada manualmente)
+        function limparBackupsAntigos() {
+            try {
+                const hoje = new Date();
+                const seteDiasAtras = new Date(hoje.getTime() - 7 * 24 * 60 * 60 * 1000);
+                
+                Object.keys(localStorage).forEach(chave => {
+                    if (chave.startsWith('backup_')) {
+                        try {
+                            const partes = chave.split('_');
+                            if (partes.length >= 3) {
+                                const dataBackup = new Date(partes.slice(2).join('_'));
+                                if (dataBackup < seteDiasAtras) {
+                                    localStorage.removeItem(chave);
+                                }
+                            }
+                        } catch (error) {
+                            console.warn('Erro ao processar backup:', chave, error);
+                        }
+                    }
+                });
+                
+                console.log('Limpeza de backups antigos concluída');
+            } catch (error) {
+                console.error('Erro na limpeza de backups:', error);
+            }
+        }
+
+        // Executar limpeza de backups na inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(limparBackupsAntigos, 2000);
+        });
+
+        console.log('Sistema de Controle de Gastos carregado com localStorage');
     </script>
 </body>
 </html>
