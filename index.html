@@ -329,6 +329,50 @@
             border: 1px solid #f5c6cb;
         }
 
+        /* Estilos para relatórios */
+        .report-filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .report-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .report-card h3 {
+            color: #1e293b;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .report-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .report-item:last-child {
+            border-bottom: none;
+        }
+
+        .report-label {
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .report-value {
+            font-weight: bold;
+            color: #059669;
+        }
+
         @media (max-width: 768px) {
             .form-grid {
                 grid-template-columns: 1fr;
@@ -346,6 +390,10 @@
             .user-info {
                 flex-direction: column;
                 gap: 10px;
+            }
+
+            .report-filters {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -383,6 +431,9 @@
             </button>
             <button class="tab-button" onclick="switchTab('apresentacao')">
                 📊 Visualização
+            </button>
+            <button class="tab-button" onclick="switchTab('relatorios')">
+                📋 Relatórios
             </button>
             <button class="tab-button" onclick="switchTab('configuracoes')">
                 ⚙️ Configurações
@@ -473,6 +524,10 @@
                             <label for="entrada">Valor da Entrada (R$)</label>
                             <input type="number" id="entrada" step="0.01" min="0" placeholder="0,00">
                         </div>
+                        <div class="form-group">
+                            <label for="primeiraParcela">Data da Primeira Parcela</label>
+                            <input type="date" id="primeiraParcela" required>
+                        </div>
                     </div>
                 </div>
                 
@@ -540,6 +595,76 @@
                     <div class="empty-state">
                         <div style="font-size: 48px; margin-bottom: 20px;">📊</div>
                         <p>Selecione um cartão e mês para ver os detalhes dos gastos</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aba de Relatórios -->
+        <div id="relatorios" class="tab-content">
+            <div class="form-section">
+                <h2>📋 Relatórios</h2>
+                <div class="report-filters">
+                    <div class="form-group">
+                        <label for="relatorioDataInicio">Data Início</label>
+                        <input type="date" id="relatorioDataInicio" onchange="gerarRelatorio()">
+                    </div>
+                    <div class="form-group">
+                        <label for="relatorioDataFim">Data Fim</label>
+                        <input type="date" id="relatorioDataFim" onchange="gerarRelatorio()">
+                    </div>
+                    <div class="form-group">
+                        <label for="relatorioCartao">Cartão</label>
+                        <select id="relatorioCartao" onchange="gerarRelatorio()">
+                            <option value="">Todos os cartões</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="relatorioCategoria">Categoria</label>
+                        <select id="relatorioCategoria" onchange="gerarRelatorio()">
+                            <option value="">Todas as categorias</option>
+                            <option value="Alimentação">Alimentação</option>
+                            <option value="Transporte">Transporte</option>
+                            <option value="Entretenimento">Entretenimento</option>
+                            <option value="Assinaturas">Assinaturas</option>
+                            <option value="Saúde">Saúde</option>
+                            <option value="Educação">Educação</option>
+                            <option value="Roupas">Roupas</option>
+                            <option value="Eletrônicos">Eletrônicos</option>
+                            <option value="Casa">Casa</option>
+                            <option value="Financiamento">💰 Financiamento</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Relatório por Cartão -->
+            <div class="report-card">
+                <h3>💳 Gastos por Cartão</h3>
+                <div id="relatorioCartoes">
+                    <div class="empty-state">
+                        <p>Configure os filtros acima para gerar o relatório</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Relatório por Categoria -->
+            <div class="report-card">
+                <h3>🏷️ Gastos por Categoria</h3>
+                <div id="relatorioCategorias">
+                    <div class="empty-state">
+                        <p>Configure os filtros acima para gerar o relatório</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Relatório Mensal -->
+            <div class="report-card">
+                <h3>📅 Gastos Mensais</h3>
+                <div id="relatorioMensal">
+                    <div class="empty-state">
+                        <p>Configure os filtros acima para gerar o relatório</p>
                     </div>
                 </div>
             </div>
@@ -630,7 +755,12 @@
             static salvarDados(usuario, tipo, dados) {
                 try {
                     const key = this.getStorageKey(usuario, tipo);
-                    localStorage.setItem(key, JSON.stringify(dados));
+                    const dataToStore = { data: dados, timestamp: new Date().getTime() };
+                    const data = JSON.stringify(dataToStore);
+                    
+                    // Usar variável global para simular localStorage
+                    if (!window.appStorage) window.appStorage = {};
+                    window.appStorage[key] = data;
                     return true;
                 } catch (error) {
                     console.error('Erro ao salvar dados:', error);
@@ -641,8 +771,16 @@
             static carregarDados(usuario, tipo) {
                 try {
                     const key = this.getStorageKey(usuario, tipo);
-                    const dados = localStorage.getItem(key);
-                    return dados ? JSON.parse(dados) : null;
+                    
+                    // Usar variável global para simular localStorage
+                    if (!window.appStorage) window.appStorage = {};
+                    const dados = window.appStorage[key];
+                    
+                    if (dados) {
+                        const parsed = JSON.parse(dados);
+                        return parsed.data || parsed; // Compatibilidade com formato anterior
+                    }
+                    return null;
                 } catch (error) {
                     console.error('Erro ao carregar dados:', error);
                     return null;
@@ -650,7 +788,8 @@
             }
 
             static verificarUsuario(nome, senha = '') {
-                const usuarios = JSON.parse(localStorage.getItem('usuarios_cadastrados')) || {};
+                if (!window.appStorage) window.appStorage = {};
+                const usuarios = JSON.parse(window.appStorage['usuarios_cadastrados'] || '{}');
                 const usuarioKey = nome.toLowerCase().replace(/\s+/g, '_');
                 
                 if (usuarios[usuarioKey]) {
@@ -663,7 +802,7 @@
                     // Novo usuário
                     const novoUsuario = { nome, senha, dataCriacao: new Date().toISOString() };
                     usuarios[usuarioKey] = novoUsuario;
-                    localStorage.setItem('usuarios_cadastrados', JSON.stringify(usuarios));
+                    window.appStorage['usuarios_cadastrados'] = JSON.stringify(usuarios);
                     return { sucesso: true, usuario: novoUsuario, novo: true };
                 }
             }
@@ -758,20 +897,30 @@
 
         function atualizarInterface() {
             document.getElementById('dataCompra').value = new Date().toISOString().split('T')[0];
+            
+            // Definir data padrão da primeira parcela para financiamentos (próximo mês)
+            const proximoMes = new Date();
+            proximoMes.setMonth(proximoMes.getMonth() + 1);
+            document.getElementById('primeiraParcela').value = proximoMes.toISOString().split('T')[0];
+            
             preencherMeses();
             atualizarFiltroCartoes();
             carregarCartoes();
             atualizarTabelaCartoes();
             atualizarTabelaCompras();
             carregarOpcoesParcelas('normal');
+            
+            // Configurar filtros de relatório
+            configurarFiltrosRelatorio();
         }
 
         // Inicialização da página
         document.addEventListener('DOMContentLoaded', function() {
             // Verificar se há usuário logado (opcional - para auto-login)
-            const ultimoUsuario = localStorage.getItem('ultimo_usuario_logado');
+            if (!window.appStorage) window.appStorage = {};
+            const ultimoUsuario = window.appStorage['ultimo_usuario_logado'];
             if (ultimoUsuario) {
-                document.getElementById('nomeUsuario').value = ultimoUsuario;
+                document.getElementById('nomeUsuario').value = JSON.parse(ultimoUsuario);
             }
         });
 
@@ -821,6 +970,11 @@
             if (tabName === 'apresentacao') {
                 atualizarVisualizacao();
             }
+            
+            // Gerar relatório se estiver na aba de relatórios
+            if (tabName === 'relatorios') {
+                gerarRelatorio();
+            }
         }
 
         function toggleFinanciamento() {
@@ -845,6 +999,11 @@
                 
                 // Limpar seleção do cartão
                 cartaoSelect.value = '';
+                
+                // Definir data padrão para primeira parcela
+                const proximoMes = new Date();
+                proximoMes.setMonth(proximoMes.getMonth() + 1);
+                document.getElementById('primeiraParcela').value = proximoMes.toISOString().split('T')[0];
             } else {
                 secaoFinanciamento.style.display = 'none';
                 grupoCartao.style.display = 'block';
@@ -887,6 +1046,7 @@
             atualizarTabelaCartoes();
             carregarCartoes();
             limparFormularioCartao();
+            configurarFiltrosRelatorio(); // Atualizar filtros de relatório
             mostrarStatus('statusCartao', 'Cartão adicionado com sucesso!', 'success');
         }
 
@@ -896,6 +1056,7 @@
                 salvarDadosUsuario(); // Salvar dados
                 atualizarTabelaCartoes();
                 carregarCartoes();
+                configurarFiltrosRelatorio(); // Atualizar filtros de relatório
                 mostrarStatus('statusCartao', 'Cartão excluído com sucesso!', 'success');
             }
         }
@@ -977,10 +1138,16 @@
 
             // Se for financiamento, adicionar dados específicos
             if (tipoCompra === 'financiamento') {
+                const primeiraParcela = document.getElementById('primeiraParcela').value;
+                if (!primeiraParcela) {
+                    mostrarStatus('statusCompra', 'Por favor, defina a data da primeira parcela para financiamentos!', 'error');
+                    return;
+                }
                 compra.valorFinanciado = parseFloat(document.getElementById('valorFinanciado').value) || 0;
                 compra.taxaJuros = parseFloat(document.getElementById('taxaJuros').value) || 0;
                 compra.tipoFinanciamento = document.getElementById('tipoFinanciamento').value;
                 compra.entrada = parseFloat(document.getElementById('entrada').value) || 0;
+                compra.primeiraParcela = primeiraParcela;
             }
 
             compras.push(compra);
@@ -1052,10 +1219,16 @@
             document.getElementById('taxaJuros').value = '';
             document.getElementById('tipoFinanciamento').value = '';
             document.getElementById('entrada').value = '';
+            
+            // Definir nova data padrão para primeira parcela
+            const proximoMes = new Date();
+            proximoMes.setMonth(proximoMes.getMonth() + 1);
+            document.getElementById('primeiraParcela').value = proximoMes.toISOString().split('T')[0];
         }
 
         function preencherMeses() {
             const selectMes = document.getElementById('filtroMes');
+            const valorAtual = selectMes.value; // Manter seleção atual
             selectMes.innerHTML = '';
             
             // Coletar todos os meses que têm parcelas
@@ -1065,8 +1238,8 @@
                            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
             
             compras.forEach(compra => {
-                // Calcular primeira parcela baseada no fechamento do cartão
-                const primeiraParcela = calcularPrimeiraParcela(compra.dataCompra, compra.cartao);
+                // Calcular primeira parcela baseada no fechamento do cartão ou data específica
+                const primeiraParcela = calcularPrimeiraParcela(compra.dataCompra, compra.cartao, compra.primeiraParcela);
                 
                 // Adicionar todos os meses das parcelas desta compra
                 for (let parcela = 1; parcela <= compra.parcelas; parcela++) {
@@ -1111,12 +1284,16 @@
                 option.value = mesAno;
                 option.textContent = nomeCompleto;
                 
-                // Selecionar o próximo mês como padrão, ou o primeiro disponível
-                const proximoMes = new Date(dataAtual.getFullYear(), dataAtual.getMonth() + 1, 1);
-                const proximoMesAno = `${String(proximoMes.getMonth() + 1).padStart(2, '0')}/${proximoMes.getFullYear()}`;
-                
-                if (mesAno === proximoMesAno || (index === 0 && !mesesOrdenados.includes(proximoMesAno))) {
+                // Manter seleção anterior ou selecionar o próximo mês como padrão
+                if (valorAtual && mesAno === valorAtual) {
                     option.selected = true;
+                } else if (!valorAtual) {
+                    const proximoMes = new Date(dataAtual.getFullYear(), dataAtual.getMonth() + 1, 1);
+                    const proximoMesAno = `${String(proximoMes.getMonth() + 1).padStart(2, '0')}/${proximoMes.getFullYear()}`;
+                    
+                    if (mesAno === proximoMesAno || (index === 0 && !mesesOrdenados.includes(proximoMesAno))) {
+                        option.selected = true;
+                    }
                 }
                 
                 selectMes.appendChild(option);
@@ -1125,6 +1302,7 @@
 
         function atualizarFiltroCartoes() {
             const selectCartao = document.getElementById('filtroCartao');
+            const valorAtual = selectCartao.value; // Manter seleção atual
             const cartoesUnicos = [...new Set(compras.map(compra => compra.cartao))];
             
             // Manter a opção "Todos os cartões"
@@ -1134,6 +1312,12 @@
                 const option = document.createElement('option');
                 option.value = cartao;
                 option.textContent = cartao;
+                
+                // Manter seleção anterior
+                if (valorAtual && cartao === valorAtual) {
+                    option.selected = true;
+                }
+                
                 selectCartao.appendChild(option);
             });
             
@@ -1141,8 +1325,15 @@
             preencherMeses();
         }
 
-        function calcularPrimeiraParcela(dataCompra, nomeCartao) {
-            // Para financiamentos, usar sempre o próximo mês
+// FUNÇÃO CORRIGIDA DO FECHAMENTO
+        function calcularPrimeiraParcela(dataCompra, nomeCartao, primeiraParcela = null) {
+            // Para financiamentos com data específica, usar a data definida
+            if (primeiraParcela) {
+                const data = new Date(primeiraParcela + 'T00:00:00');
+                return new Date(data.getFullYear(), data.getMonth(), 1);
+            }
+
+            // Para financiamentos sem data específica, usar sempre o próximo mês
             if (nomeCartao === 'Financiamento') {
                 const data = new Date(dataCompra + 'T00:00:00');
                 return new Date(data.getFullYear(), data.getMonth() + 1, 1);
@@ -1156,27 +1347,24 @@
             }
 
             const data = new Date(dataCompra + 'T00:00:00');
-            const diaCompra = data.getDate();
+            const anoCompra = data.getFullYear();
+            const mesCompra = data.getMonth(); // 0-11
+            const diaCompra = data.getDate(); // 1-31
             const diaFechamento = cartao.fechamento;
             
-            let mesReferencia;
-            if (diaCompra <= diaFechamento) {
-                // Compra entra na fatura do mês atual
-                mesReferencia = new Date(data.getFullYear(), data.getMonth() + 1, 1);
+            // Se a data de fechamento já passou neste mês, considerar o fechamento do próximo mês
+            if (diaCompra > diaFechamento) {
+                // Compra foi após o fechamento, vai para a próxima fatura (mês + 1)
+                return new Date(anoCompra, mesCompra + 1, 1);
             } else {
-                // Compra entra na fatura do próximo mês
-                mesReferencia = new Date(data.getFullYear(), data.getMonth() + 2, 1);
+                // Compra foi antes/no dia do fechamento, vai para a fatura atual (mesmo mês)
+                return new Date(anoCompra, mesCompra, 1);
             }
-            
-            return mesReferencia;
         }
 
         function atualizarVisualizacao() {
             const cartaoFiltro = document.getElementById('filtroCartao').value;
             const mesFiltro = document.getElementById('filtroMes').value;
-            
-            // Atualizar lista de meses sempre que a visualização for chamada
-            preencherMeses();
             
             if (!mesFiltro) {
                 document.getElementById('totalPagar').textContent = 'R$ 0,00';
@@ -1201,7 +1389,7 @@
                 }
 
                 // Calcular primeira parcela baseada no fechamento do cartão
-                const primeiraParcela = calcularPrimeiraParcela(compra.dataCompra, compra.cartao);
+                const primeiraParcela = calcularPrimeiraParcela(compra.dataCompra, compra.cartao, compra.primeiraParcela);
                 
                 // Verificar todas as parcelas da compra
                 for (let parcela = 1; parcela <= compra.parcelas; parcela++) {
@@ -1249,10 +1437,173 @@
             }
         }
 
+        // FUNÇÕES DE RELATÓRIO
+        function configurarFiltrosRelatorio() {
+            // Configurar filtro de cartão
+            const selectCartao = document.getElementById('relatorioCartao');
+            const cartoesUnicos = [...new Set(compras.map(compra => compra.cartao))];
+            
+            selectCartao.innerHTML = '<option value="">Todos os cartões</option>';
+            cartoesUnicos.forEach(cartao => {
+                const option = document.createElement('option');
+                option.value = cartao;
+                option.textContent = cartao;
+                selectCartao.appendChild(option);
+            });
+
+            // Configurar datas padrão (últimos 3 meses)
+            const hoje = new Date();
+            const dataFim = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+            const dataInicio = new Date(hoje.getFullYear(), hoje.getMonth() - 2, 1);
+            
+            document.getElementById('relatorioDataInicio').value = dataInicio.toISOString().split('T')[0];
+            document.getElementById('relatorioDataFim').value = dataFim.toISOString().split('T')[0];
+        }
+
+        function gerarRelatorio() {
+            const dataInicio = document.getElementById('relatorioDataInicio').value;
+            const dataFim = document.getElementById('relatorioDataFim').value;
+            const cartaoFiltro = document.getElementById('relatorioCartao').value;
+            const categoriaFiltro = document.getElementById('relatorioCategoria').value;
+
+            if (!dataInicio || !dataFim) {
+                return;
+            }
+
+            // Filtrar compras no período
+            const comprasFiltradas = compras.filter(compra => {
+                const dataCompra = new Date(compra.dataCompra + 'T00:00:00');
+                const inicio = new Date(dataInicio + 'T00:00:00');
+                const fim = new Date(dataFim + 'T00:00:00');
+                
+                const dentroData = dataCompra >= inicio && dataCompra <= fim;
+                const dentroCartao = !cartaoFiltro || compra.cartao === cartaoFiltro;
+                const dentroCategoria = !categoriaFiltro || compra.categoria === categoriaFiltro;
+                
+                return dentroData && dentroCartao && dentroCategoria;
+            });
+
+            // Gerar relatório por cartão
+            gerarRelatorioCartoes(comprasFiltradas);
+            
+            // Gerar relatório por categoria
+            gerarRelatorioCategorias(comprasFiltradas);
+            
+            // Gerar relatório mensal
+            gerarRelatorioMensal(comprasFiltradas);
+        }
+
+        function gerarRelatorioCartoes(comprasFiltradas) {
+            const relatorioCartoes = {};
+            
+            comprasFiltradas.forEach(compra => {
+                if (!relatorioCartoes[compra.cartao]) {
+                    relatorioCartoes[compra.cartao] = {
+                        total: 0,
+                        quantidade: 0
+                    };
+                }
+                relatorioCartoes[compra.cartao].total += compra.valorTotal;
+                relatorioCartoes[compra.cartao].quantidade += 1;
+            });
+
+            const container = document.getElementById('relatorioCartoes');
+            
+            if (Object.keys(relatorioCartoes).length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>Nenhum gasto encontrado no período selecionado</p></div>';
+                return;
+            }
+
+            // Ordenar por valor total
+            const cartoesOrdenados = Object.entries(relatorioCartoes)
+                .sort(([,a], [,b]) => b.total - a.total);
+
+            container.innerHTML = cartoesOrdenados.map(([cartao, dados]) => `
+                <div class="report-item">
+                    <div class="report-label">${cartao} (${dados.quantidade} compra${dados.quantidade > 1 ? 's' : ''})</div>
+                    <div class="report-value">R$ ${dados.total.toFixed(2).replace('.', ',')}</div>
+                </div>
+            `).join('');
+        }
+
+        function gerarRelatorioCategorias(comprasFiltradas) {
+            const relatorioCategorias = {};
+            
+            comprasFiltradas.forEach(compra => {
+                const categoria = compra.categoria || 'Sem Categoria';
+                if (!relatorioCategorias[categoria]) {
+                    relatorioCategorias[categoria] = {
+                        total: 0,
+                        quantidade: 0
+                    };
+                }
+                relatorioCategorias[categoria].total += compra.valorTotal;
+                relatorioCategorias[categoria].quantidade += 1;
+            });
+
+            const container = document.getElementById('relatorioCategorias');
+            
+            if (Object.keys(relatorioCategorias).length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>Nenhum gasto encontrado no período selecionado</p></div>';
+                return;
+            }
+
+            // Ordenar por valor total
+            const categoriasOrdenadas = Object.entries(relatorioCategorias)
+                .sort(([,a], [,b]) => b.total - a.total);
+
+            container.innerHTML = categoriasOrdenadas.map(([categoria, dados]) => `
+                <div class="report-item">
+                    <div class="report-label">${categoria} (${dados.quantidade} compra${dados.quantidade > 1 ? 's' : ''})</div>
+                    <div class="report-value">R$ ${dados.total.toFixed(2).replace('.', ',')}</div>
+                </div>
+            `).join('');
+        }
+
+        function gerarRelatorioMensal(comprasFiltradas) {
+            const relatorioMensal = {};
+            const nomesMes = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 
+                           'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+            
+            comprasFiltradas.forEach(compra => {
+                const data = new Date(compra.dataCompra + 'T00:00:00');
+                const mesAno = `${nomesMes[data.getMonth()]}/${data.getFullYear()}`;
+                
+                if (!relatorioMensal[mesAno]) {
+                    relatorioMensal[mesAno] = {
+                        total: 0,
+                        quantidade: 0,
+                        ordenacao: data.getFullYear() * 12 + data.getMonth() // Para ordenação correta
+                    };
+                }
+                relatorioMensal[mesAno].total += compra.valorTotal;
+                relatorioMensal[mesAno].quantidade += 1;
+            });
+
+            const container = document.getElementById('relatorioMensal');
+            
+            if (Object.keys(relatorioMensal).length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>Nenhum gasto encontrado no período selecionado</p></div>';
+                return;
+            }
+
+            // Ordenar por mês/ano
+            const mesesOrdenados = Object.entries(relatorioMensal)
+                .sort(([,a], [,b]) => a.ordenacao - b.ordenacao);
+
+            container.innerHTML = mesesOrdenados.map(([mesAno, dados]) => `
+                <div class="report-item">
+                    <div class="report-label">${mesAno} (${dados.quantidade} compra${dados.quantidade > 1 ? 's' : ''})</div>
+                    <div class="report-value">R$ ${dados.total.toFixed(2).replace('.', ',')}</div>
+                </div>
+            `).join('');
+        }
+
         // Salvar último usuário para facilitar próximo login
         window.addEventListener('beforeunload', function() {
             if (usuarioAtual) {
-                localStorage.setItem('ultimo_usuario_logado', usuarioAtual.nome);
+                if (!window.appStorage) window.appStorage = {};
+                window.appStorage['ultimo_usuario_logado'] = JSON.stringify(usuarioAtual.nome);
             }
         });
     </script>
