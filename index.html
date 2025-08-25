@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Cartão de Crédito</title>
+    <title>Controle de Cartão de Crédito - Versão Melhorada</title>
     <style>
         * {
             margin: 0;
@@ -175,6 +175,24 @@
             transform: translateY(-2px);
         }
 
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+        }
+
         .btn-danger {
             background: #ef4444;
             color: white;
@@ -219,97 +237,6 @@
             font-weight: 600;
         }
 
-        .presentation-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-        }
-
-        .presentation-section h2 {
-            margin-bottom: 20px;
-            font-size: 28px;
-            text-align: center;
-        }
-
-        .filters {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .filter-group select {
-            background: white;
-            min-width: 200px;
-        }
-
-        .summary-card {
-            background: white;
-            color: #1e293b;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-
-        .summary-total {
-            font-size: 48px;
-            font-weight: bold;
-            color: #3b82f6;
-            margin: 20px 0;
-        }
-
-        .details-list {
-            background: #f8fafc;
-            padding: 25px;
-            border-radius: 15px;
-            margin-top: 30px;
-        }
-
-        .detail-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        .detail-item:last-child {
-            border-bottom: none;
-        }
-
-        .detail-description {
-            flex: 1;
-            font-weight: 500;
-        }
-
-        .detail-value {
-            font-weight: bold;
-            color: #059669;
-            font-size: 18px;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px;
-            color: #6b7280;
-        }
-
-        .empty-state i {
-            font-size: 48px;
-            margin-bottom: 20px;
-            color: #d1d5db;
-        }
-
         .status-message {
             padding: 10px;
             margin: 10px 0;
@@ -329,48 +256,78 @@
             border: 1px solid #f5c6cb;
         }
 
-        /* Estilos para relatórios */
-        .report-filters {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
         }
 
-        .report-card {
-            background: white;
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .backup-section {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
             border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 20px;
             margin-bottom: 20px;
         }
 
-        .report-card h3 {
-            color: #1e293b;
+        .backup-section h3 {
+            color: #92400e;
             margin-bottom: 15px;
-            font-size: 20px;
-        }
-
-        .report-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #e5e7eb;
+            gap: 10px;
         }
 
-        .report-item:last-child {
-            border-bottom: none;
+        .backup-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
         }
 
-        .report-label {
-            font-weight: 500;
-            color: #374151;
+        .storage-info {
+            background: #dbeafe;
+            border: 2px solid #3b82f6;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
 
-        .report-value {
-            font-weight: bold;
-            color: #059669;
+        .storage-info h3 {
+            color: #1e40af;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .info-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .info-item strong {
+            display: block;
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+
+        .hidden-input {
+            display: none;
         }
 
         @media (max-width: 768px) {
@@ -378,21 +335,16 @@
                 grid-template-columns: 1fr;
             }
             
-            .filters {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .summary-total {
-                font-size: 36px;
-            }
-
             .user-info {
                 flex-direction: column;
                 gap: 10px;
             }
 
-            .report-filters {
+            .backup-buttons {
+                flex-direction: column;
+            }
+
+            .info-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -427,113 +379,65 @@
 
         <div class="tabs">
             <button class="tab-button active" onclick="switchTab('compras')">
-                📝 Cadastro de Compras
+                📝 Cadastro
             </button>
-            <button class="tab-button" onclick="switchTab('apresentacao')">
+            <button class="tab-button" onclick="switchTab('visualizacao')">
                 📊 Visualização
             </button>
-            <button class="tab-button" onclick="switchTab('relatorios')">
-                📋 Relatórios
+            <button class="tab-button" onclick="switchTab('backup')">
+                💾 Backup & Dados
             </button>
             <button class="tab-button" onclick="switchTab('configuracoes')">
                 ⚙️ Configurações
             </button>
         </div>
 
-        <!-- Aba de Cadastro de Compras -->
+        <!-- Aba de Cadastro -->
         <div id="compras" class="tab-content active">
             <div class="form-section">
                 <h2>Nova Compra</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="tipoCompra">Tipo de Compra</label>
-                        <select id="tipoCompra" onchange="toggleFinanciamento()">
-                            <option value="normal">💳 Compra no Cartão</option>
-                            <option value="financiamento">💰 Financiamento</option>
-                        </select>
-                    </div>
-                    <div class="form-group" id="grupoCartao">
                         <label for="cartao">Cartão de Crédito</label>
                         <select id="cartao" required>
                             <option value="">Selecione o cartão</option>
-                            <!-- Cartões serão carregados dinamicamente -->
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="dataCompra">Data da Compra/Contratação</label>
+                        <label for="dataCompra">Data da Compra</label>
                         <input type="date" id="dataCompra" required>
                     </div>
                     <div class="form-group">
-                        <label for="descricao" id="labelDescricao">Descrição da Compra</label>
-                        <input type="text" id="descricao" placeholder="Ex: Netflix, Celular, Supermercado" required>
+                        <label for="descricao">Descrição</label>
+                        <input type="text" id="descricao" placeholder="Ex: Netflix, Celular" required>
                     </div>
                     <div class="form-group">
                         <label for="categoria">Categoria</label>
                         <select id="categoria">
-                            <option value="">Selecione uma categoria</option>
                             <option value="Alimentação">Alimentação</option>
                             <option value="Transporte">Transporte</option>
                             <option value="Entretenimento">Entretenimento</option>
                             <option value="Assinaturas">Assinaturas</option>
                             <option value="Saúde">Saúde</option>
-                            <option value="Educação">Educação</option>
-                            <option value="Roupas">Roupas</option>
-                            <option value="Eletrônicos">Eletrônicos</option>
-                            <option value="Casa">Casa</option>
-                            <option value="Financiamento">💰 Financiamento</option>
                             <option value="Outros">Outros</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="valorTotal" id="labelValorTotal">Valor Total (R$)</label>
+                        <label for="valorTotal">Valor Total (R$)</label>
                         <input type="number" id="valorTotal" step="0.01" min="0" placeholder="0,00" required>
                     </div>
                     <div class="form-group">
-                        <label for="parcelas">Quantidade de Parcelas</label>
-                        <select id="parcelas" required>
-                            <!-- Opções serão carregadas dinamicamente -->
+                        <label for="parcelas">Parcelas</label>
+                        <select id="parcelas">
+                            <option value="1">1x</option>
+                            <option value="2">2x</option>
+                            <option value="3">3x</option>
+                            <option value="4">4x</option>
+                            <option value="5">5x</option>
+                            <option value="6">6x</option>
+                            <option value="12">12x</option>
                         </select>
                     </div>
-                </div>
-                
-                <!-- Seção de Financiamento (oculta por padrão) -->
-                <div id="secaoFinanciamento" style="display: none;">
-                    <h3 style="color: #1e293b; margin-bottom: 15px;">💰 Detalhes do Financiamento</h3>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label for="valorFinanciado">Valor Financiado (R$)</label>
-                            <input type="number" id="valorFinanciado" step="0.01" min="0" placeholder="Valor sem entrada">
-                        </div>
-                        <div class="form-group">
-                            <label for="taxaJuros">Taxa de Juros (% a.m.)</label>
-                            <input type="number" id="taxaJuros" step="0.01" min="0" placeholder="Ex: 2.5">
-                        </div>
-                        <div class="form-group">
-                            <label for="tipoFinanciamento">Tipo de Financiamento</label>
-                            <select id="tipoFinanciamento">
-                                <option value="">Selecione o tipo</option>
-                                <option value="Veículo">Veículo</option>
-                                <option value="Imóvel">Imóvel</option>
-                                <option value="Reforma">Reforma</option>
-                                <option value="Educação">Educação</option>
-                                <option value="Consolidação">Consolidação de Dívidas</option>
-                                <option value="Outros">Outros</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="entrada">Valor da Entrada (R$)</label>
-                            <input type="number" id="entrada" step="0.01" min="0" placeholder="0,00">
-                        </div>
-                        <div class="form-group">
-                            <label for="primeiraParcela">Data da Primeira Parcela</label>
-                            <input type="date" id="primeiraParcela" required>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="observacoes">Observações (opcional)</label>
-                    <textarea id="observacoes" rows="3" placeholder="Informações adicionais sobre a compra/financiamento"></textarea>
                 </div>
                 <button class="btn btn-primary" onclick="adicionarCompra()">
                     ➕ Adicionar Compra
@@ -552,119 +456,106 @@
                             <th>Categoria</th>
                             <th>Valor Total</th>
                             <th>Parcelas</th>
-                            <th>Valor/Parcela</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody id="tabelaCompras">
-                        <!-- Compras serão inseridas aqui -->
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Aba de Apresentação -->
-        <div id="apresentacao" class="tab-content">
-            <div class="presentation-section">
-                <h2>💳 Visualização de Gastos</h2>
-                <div class="filters">
-                    <div class="filter-group">
-                        <label for="filtroCartao">Cartão</label>
-                        <select id="filtroCartao" onchange="atualizarVisualizacao()">
-                            <option value="">Todos os cartões</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label for="filtroMes">Mês</label>
-                        <select id="filtroMes" onchange="atualizarVisualizacao()">
-                            <!-- Meses serão preenchidos dinamicamente -->
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="summary-card">
-                    <h3>Total a Pagar</h3>
-                    <div class="summary-total" id="totalPagar">R$ 0,00</div>
-                    <p id="periodoInfo">Selecione um período para visualizar</p>
-                </div>
-            </div>
-
-            <div class="details-list">
-                <h3 style="margin-bottom: 20px; color: #1e293b;">Detalhamento dos Gastos</h3>
-                <div id="detalhesGastos">
-                    <div class="empty-state">
-                        <div style="font-size: 48px; margin-bottom: 20px;">📊</div>
-                        <p>Selecione um cartão e mês para ver os detalhes dos gastos</p>
+        <!-- Aba de Visualização -->
+        <div id="visualizacao" class="tab-content">
+            <div class="form-section">
+                <h2>📊 Visualização de Gastos</h2>
+                <p style="color: #6b7280; margin-bottom: 20px;">Visualize seus gastos mensais e por cartão</p>
+                <div id="resumoGastos">
+                    <div style="background: white; padding: 30px; border-radius: 15px; text-align: center;">
+                        <h3 style="color: #3b82f6; margin-bottom: 15px;">Total de Compras</h3>
+                        <div style="font-size: 48px; font-weight: bold; color: #059669;" id="totalGastos">R$ 0,00</div>
+                        <div style="color: #6b7280; margin-top: 10px;" id="numeroCompras">0 compras cadastradas</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Aba de Relatórios -->
-        <div id="relatorios" class="tab-content">
+        <!-- Aba de Backup & Dados -->
+        <div id="backup" class="tab-content">
+            <!-- Informações de Armazenamento -->
+            <div class="storage-info">
+                <h3>📊 Informações de Armazenamento</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Espaço Usado</strong>
+                        <span id="espacoUsado">Calculando...</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Total de Compras</strong>
+                        <span id="totalComprasInfo">0</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Total de Cartões</strong>
+                        <span id="totalCartoesInfo">0</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Último Backup</strong>
+                        <span id="ultimoBackup">Nunca</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção de Backup -->
+            <div class="backup-section">
+                <h3>⚠️ Importante: Backup dos Seus Dados</h3>
+                <p style="margin-bottom: 15px;">
+                    <strong>Seus dados são salvos apenas neste navegador!</strong> Para garantir que não os perca:
+                </p>
+                <ul style="margin-bottom: 20px; padding-left: 20px;">
+                    <li><strong>Exporte</strong> seus dados regularmente</li>
+                    <li><strong>Guarde</strong> o arquivo em local seguro (Google Drive, email, etc.)</li>
+                    <li><strong>Importe</strong> em caso de problemas ou ao trocar de dispositivo</li>
+                </ul>
+                
+                <div class="backup-buttons">
+                    <button class="btn btn-success" onclick="exportarDados()">
+                        📤 Exportar Dados
+                    </button>
+                    <button class="btn btn-primary" onclick="document.getElementById('importFile').click()">
+                        📥 Importar Dados
+                    </button>
+                    <button class="btn btn-warning" onclick="criarBackupAutomatico()">
+                        🔄 Backup Automático
+                    </button>
+                    <button class="btn btn-danger" onclick="confirmarLimpezaDados()">
+                        🗑️ Limpar Todos os Dados
+                    </button>
+                </div>
+                
+                <input type="file" id="importFile" class="hidden-input" accept=".json" onchange="importarDados(event)">
+            </div>
+
+            <!-- Aviso sobre Permanência -->
             <div class="form-section">
-                <h2>📋 Relatórios</h2>
-                <div class="report-filters">
-                    <div class="form-group">
-                        <label for="relatorioDataInicio">Data Início</label>
-                        <input type="date" id="relatorioDataInicio" onchange="gerarRelatorio()">
-                    </div>
-                    <div class="form-group">
-                        <label for="relatorioDataFim">Data Fim</label>
-                        <input type="date" id="relatorioDataFim" onchange="gerarRelatorio()">
-                    </div>
-                    <div class="form-group">
-                        <label for="relatorioCartao">Cartão</label>
-                        <select id="relatorioCartao" onchange="gerarRelatorio()">
-                            <option value="">Todos os cartões</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="relatorioCategoria">Categoria</label>
-                        <select id="relatorioCategoria" onchange="gerarRelatorio()">
-                            <option value="">Todas as categorias</option>
-                            <option value="Alimentação">Alimentação</option>
-                            <option value="Transporte">Transporte</option>
-                            <option value="Entretenimento">Entretenimento</option>
-                            <option value="Assinaturas">Assinaturas</option>
-                            <option value="Saúde">Saúde</option>
-                            <option value="Educação">Educação</option>
-                            <option value="Roupas">Roupas</option>
-                            <option value="Eletrônicos">Eletrônicos</option>
-                            <option value="Casa">Casa</option>
-                            <option value="Financiamento">💰 Financiamento</option>
-                            <option value="Outros">Outros</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Relatório por Cartão -->
-            <div class="report-card">
-                <h3>💳 Gastos por Cartão</h3>
-                <div id="relatorioCartoes">
-                    <div class="empty-state">
-                        <p>Configure os filtros acima para gerar o relatório</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Relatório por Categoria -->
-            <div class="report-card">
-                <h3>🏷️ Gastos por Categoria</h3>
-                <div id="relatorioCategorias">
-                    <div class="empty-state">
-                        <p>Configure os filtros acima para gerar o relatório</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Relatório Mensal -->
-            <div class="report-card">
-                <h3>📅 Gastos Mensais</h3>
-                <div id="relatorioMensal">
-                    <div class="empty-state">
-                        <p>Configure os filtros acima para gerar o relatório</p>
+                <h2>🛡️ Sobre a Permanência dos Dados</h2>
+                <div style="background: #f0f9ff; padding: 20px; border-radius: 10px; border-left: 4px solid #3b82f6;">
+                    <h4 style="color: #1e40af; margin-bottom: 10px;">✅ Seus dados SÃO permanentes:</h4>
+                    <ul style="margin-bottom: 15px;">
+                        <li>Ficam salvos indefinidamente no seu navegador</li>
+                        <li>Não expiram automaticamente</li>
+                        <li>Só são apagados se você optar por isso</li>
+                    </ul>
+                    
+                    <h4 style="color: #dc2626; margin-bottom: 10px;">⚠️ Mas podem ser perdidos se:</h4>
+                    <ul style="margin-bottom: 15px;">
+                        <li>Você limpar o cache/dados do navegador</li>
+                        <li>Usar modo privado/incógnito</li>
+                        <li>Trocar de dispositivo/navegador</li>
+                        <li>Problemas técnicos no navegador</li>
+                    </ul>
+                    
+                    <div style="background: #fef3c7; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                        <strong>💡 Recomendação:</strong> Faça backup dos seus dados regularmente usando o botão "Exportar Dados" acima.
                     </div>
                 </div>
             </div>
@@ -680,38 +571,9 @@
                         <input type="text" id="nomeCartao" placeholder="Ex: Nubank Roxinho" required>
                     </div>
                     <div class="form-group">
-                        <label for="diaFechamento">Dia de Fechamento</label>
-                        <select id="diaFechamento" required>
-                            <option value="">Selecione o dia</option>
-                            <option value="1">Dia 1</option>
-                            <option value="5">Dia 5</option>
-                            <option value="10">Dia 10</option>
-                            <option value="15">Dia 15</option>
-                            <option value="20">Dia 20</option>
-                            <option value="25">Dia 25</option>
-                            <option value="30">Dia 30</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="diaVencimento">Dia de Vencimento</label>
-                        <select id="diaVencimento" required>
-                            <option value="">Selecione o dia</option>
-                            <option value="5">Dia 5</option>
-                            <option value="10">Dia 10</option>
-                            <option value="15">Dia 15</option>
-                            <option value="20">Dia 20</option>
-                            <option value="25">Dia 25</option>
-                            <option value="30">Dia 30</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="limiteCartao">Limite (R$) - Opcional</label>
+                        <label for="limiteCartao">Limite (R$)</label>
                         <input type="number" id="limiteCartao" step="0.01" min="0" placeholder="0,00">
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="observacoesCartao">Observações do Cartão (opcional)</label>
-                    <textarea id="observacoesCartao" rows="2" placeholder="Informações adicionais sobre o cartão"></textarea>
                 </div>
                 <button class="btn btn-primary" onclick="adicionarCartao()">
                     ➕ Adicionar Cartão
@@ -725,15 +587,11 @@
                     <thead>
                         <tr>
                             <th>Nome do Cartão</th>
-                            <th>Fechamento</th>
-                            <th>Vencimento</th>
                             <th>Limite</th>
-                            <th>Observações</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody id="tabelaCartoes">
-                        <!-- Cartões serão inseridos aqui -->
                     </tbody>
                 </table>
             </div>
@@ -746,35 +604,34 @@
         let compras = [];
         let cartoes = [];
 
-        // Sistema de persistência de dados usando localStorage
+        // Sistema de persistência melhorado
         class DataManager {
             static getStorageKey(usuario, tipo) {
-                return `gastos_${usuario.toLowerCase().replace(/\s+/g, '_')}_${tipo}`;
+                return `gastos_v2_${usuario.toLowerCase().replace(/\s+/g, '_')}_${tipo}`;
             }
 
             static salvarDados(usuario, tipo, dados) {
                 try {
                     const key = this.getStorageKey(usuario, tipo);
-                    const dataToStore = { 
-                        data: dados, 
+                    const dataToStore = {
+                        data: dados,
                         timestamp: new Date().getTime(),
                         usuario: usuario,
-                        versao: '1.0' // Para futuras migrações
+                        versao: '2.0'
                     };
-                    const dataString = JSON.stringify(dataToStore);
-                    localStorage.setItem(key, dataString);
                     
-                    // Log para debug
-                    console.log(`Dados salvos: ${key}`, dados);
+                    localStorage.setItem(key, JSON.stringify(dataToStore));
+                    
+                    // Salvar timestamp do último save
+                    localStorage.setItem(`${key}_lastSave`, new Date().toISOString());
+                    
+                    console.log(`✅ Dados salvos: ${key}`, dados);
                     return true;
                 } catch (error) {
-                    console.error('Erro ao salvar dados:', error);
+                    console.error('❌ Erro ao salvar dados:', error);
                     
-                    // Verificar se o erro é por falta de espaço
-                    if (error.name === 'QuotaExceededError' || error.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
-                        mostrarStatus('statusCompra', 'Erro: Espaço de armazenamento local esgotado! Considere exportar seus dados.', 'error');
-                    } else {
-                        mostrarStatus('statusCompra', 'Erro ao salvar dados localmente.', 'error');
+                    if (error.name === 'QuotaExceededError') {
+                        mostrarStatus('statusCompra', '❌ Espaço de armazenamento esgotado! Faça backup e limpe dados antigos.', 'error');
                     }
                     return false;
                 }
@@ -787,148 +644,128 @@
                     
                     if (dados) {
                         const parsed = JSON.parse(dados);
-                        
-                        // Log para debug
-                        console.log(`Dados carregados: ${key}`, parsed.data || parsed);
-                        
-                        return parsed.data || parsed; // Compatibilidade com formato anterior
+                        console.log(`📁 Dados carregados: ${key}`);
+                        return parsed.data || parsed;
                     }
-                    return null;
+                    return [];
                 } catch (error) {
-                    console.error('Erro ao carregar dados:', error);
-                    mostrarStatus('statusCompra', 'Erro ao carregar dados locais.', 'error');
-                    return null;
+                    console.error('❌ Erro ao carregar dados:', error);
+                    return [];
                 }
             }
 
             static verificarUsuario(nome, senha = '') {
                 try {
-                    const usuarios = JSON.parse(localStorage.getItem('usuarios_cadastrados') || '{}');
+                    const usuarios = JSON.parse(localStorage.getItem('usuarios_v2') || '{}');
                     const usuarioKey = nome.toLowerCase().replace(/\s+/g, '_');
                     
                     if (usuarios[usuarioKey]) {
-                        // Usuário existe, verificar senha se foi definida
                         if (usuarios[usuarioKey].senha && usuarios[usuarioKey].senha !== senha) {
                             return { sucesso: false, mensagem: 'Senha incorreta!' };
                         }
+                        
+                        // Atualizar último login
+                        usuarios[usuarioKey].ultimoLogin = new Date().toISOString();
+                        localStorage.setItem('usuarios_v2', JSON.stringify(usuarios));
+                        
                         return { sucesso: true, usuario: usuarios[usuarioKey] };
                     } else {
                         // Novo usuário
-                        const novoUsuario = { 
-                            nome, 
-                            senha, 
+                        const novoUsuario = {
+                            nome,
+                            senha,
                             dataCriacao: new Date().toISOString(),
                             ultimoLogin: new Date().toISOString()
                         };
-                        usuarios[usuarioKey] = novoUsuario;
-                        localStorage.setItem('usuarios_cadastrados', JSON.stringify(usuarios));
                         
-                        console.log('Novo usuário criado:', novoUsuario);
+                        usuarios[usuarioKey] = novoUsuario;
+                        localStorage.setItem('usuarios_v2', JSON.stringify(usuarios));
+                        
                         return { sucesso: true, usuario: novoUsuario, novo: true };
                     }
                 } catch (error) {
-                    console.error('Erro ao verificar usuário:', error);
-                    return { sucesso: false, mensagem: 'Erro interno. Tente novamente.' };
+                    console.error('❌ Erro ao verificar usuário:', error);
+                    return { sucesso: false, mensagem: 'Erro interno.' };
                 }
             }
 
-            static listarUsuarios() {
-                try {
-                    const usuarios = JSON.parse(localStorage.getItem('usuarios_cadastrados') || '{}');
-                    return Object.values(usuarios);
-                } catch (error) {
-                    console.error('Erro ao listar usuários:', error);
-                    return [];
-                }
-            }
-
-            static exportarDados(usuario) {
-                try {
-                    const compras = this.carregarDados(usuario, 'compras') || [];
-                    const cartoes = this.carregarDados(usuario, 'cartoes') || [];
-                    
-                    const dadosExportacao = {
-                        usuario: usuario,
-                        dataExportacao: new Date().toISOString(),
-                        versao: '1.0',
-                        dados: {
-                            compras,
-                            cartoes
-                        }
-                    };
-                    
-                    return dadosExportacao;
-                } catch (error) {
-                    console.error('Erro ao exportar dados:', error);
-                    return null;
-                }
-            }
-
-            static importarDados(usuario, dadosImportados) {
-                try {
-                    if (dadosImportados.dados) {
-                        if (dadosImportados.dados.compras) {
-                            this.salvarDados(usuario, 'compras', dadosImportados.dados.compras);
-                        }
-                        if (dadosImportados.dados.cartoes) {
-                            this.salvarDados(usuario, 'cartoes', dadosImportados.dados.cartoes);
-                        }
-                        return true;
-                    }
-                    return false;
-                } catch (error) {
-                    console.error('Erro ao importar dados:', error);
-                    return false;
-                }
-            }
-
-            static obterEstatisticasArmazenamento() {
+            static obterEstatisticas(usuario) {
                 try {
                     let totalSize = 0;
-                    let itemCount = 0;
+                    let itensEncontrados = 0;
                     
                     for (let key in localStorage) {
-                        if (localStorage.hasOwnProperty(key) && key.startsWith('gastos_')) {
+                        if (localStorage.hasOwnProperty(key) && key.includes(usuario.toLowerCase().replace(/\s+/g, '_'))) {
                             const itemSize = localStorage.getItem(key).length;
                             totalSize += itemSize;
-                            itemCount++;
+                            itensEncontrados++;
                         }
                     }
                     
                     return {
-                        totalSize: Math.round(totalSize / 1024), // KB
-                        itemCount,
-                        espacoDisponivel: this.obterEspacoDisponivel()
+                        tamanhoKB: Math.round(totalSize / 1024),
+                        itens: itensEncontrados,
+                        ultimoBackup: this.obterUltimoBackup(usuario)
                     };
                 } catch (error) {
-                    console.error('Erro ao obter estatísticas:', error);
-                    return { totalSize: 0, itemCount: 0, espacoDisponivel: 'Desconhecido' };
+                    return { tamanhoKB: 0, itens: 0, ultimoBackup: null };
                 }
             }
 
-            static obterEspacoDisponivel() {
+            static obterUltimoBackup(usuario) {
                 try {
-                    // Tentar estimar o espaço disponível
-                    let testKey = 'test_storage_space';
-                    let testData = '0'.repeat(1024); // 1KB
-                    let testSize = 0;
+                    const backupKey = `backup_${usuario.toLowerCase().replace(/\s+/g, '_')}_timestamp`;
+                    const timestamp = localStorage.getItem(backupKey);
+                    return timestamp ? new Date(timestamp) : null;
+                } catch (error) {
+                    return null;
+                }
+            }
+
+            static salvarBackup(usuario) {
+                try {
+                    const dados = {
+                        usuario,
+                        dataBackup: new Date().toISOString(),
+                        compras: this.carregarDados(usuario, 'compras'),
+                        cartoes: this.carregarDados(usuario, 'cartoes'),
+                        versao: '2.0'
+                    };
+
+                    const backupKey = `backup_${usuario.toLowerCase().replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}`;
+                    const timestampKey = `backup_${usuario.toLowerCase().replace(/\s+/g, '_')}_timestamp`;
                     
-                    while (testSize < 10240) { // Testar até 10MB
-                        try {
-                            localStorage.setItem(testKey, testData);
-                            localStorage.removeItem(testKey);
-                            testSize += 1024;
-                            testData += '0'.repeat(1024);
-                        } catch (e) {
-                            localStorage.removeItem(testKey);
-                            return Math.round(testSize / 1024) + 'KB+';
+                    localStorage.setItem(backupKey, JSON.stringify(dados));
+                    localStorage.setItem(timestampKey, new Date().toISOString());
+                    
+                    // Limitar a 5 backups por usuário
+                    this.limparBackupsAntigos(usuario);
+                    
+                    return dados;
+                } catch (error) {
+                    console.error('❌ Erro ao criar backup:', error);
+                    return null;
+                }
+            }
+
+            static limparBackupsAntigos(usuario) {
+                try {
+                    const prefixo = `backup_${usuario.toLowerCase().replace(/\s+/g, '_')}_`;
+                    const chaves = [];
+                    
+                    for (let key in localStorage) {
+                        if (key.startsWith(prefixo) && key.includes('-')) { // backups têm data
+                            chaves.push(key);
                         }
                     }
                     
-                    localStorage.removeItem(testKey);
-                    return '10MB+';
+                    if (chaves.length > 5) {
+                        chaves.sort().slice(0, -5).forEach(key => {
+                            localStorage.removeItem(key);
+                        });
+                    }
                 } catch (error) {
-                    return 'Não disponível';
+                    console.error('❌ Erro ao limpar backups:', error);
                 }
             }
         }
@@ -937,10 +774,9 @@
         function fazerLogin() {
             const nome = document.getElementById('nomeUsuario').value.trim();
             const senha = document.getElementById('senhaUsuario').value;
-            const statusDiv = document.getElementById('statusLogin');
 
             if (!nome) {
-                mostrarStatus('statusLogin', 'Por favor, digite seu nome!', 'error');
+                mostrarStatus('statusLogin', 'Digite seu nome!', 'error');
                 return;
             }
 
@@ -948,56 +784,32 @@
             
             if (resultado.sucesso) {
                 usuarioAtual = resultado.usuario;
-                
-                // Atualizar último login
-                if (!resultado.novo) {
-                    try {
-                        const usuarios = JSON.parse(localStorage.getItem('usuarios_cadastrados') || '{}');
-                        const usuarioKey = nome.toLowerCase().replace(/\s+/g, '_');
-                        usuarios[usuarioKey].ultimoLogin = new Date().toISOString();
-                        localStorage.setItem('usuarios_cadastrados', JSON.stringify(usuarios));
-                    } catch (error) {
-                        console.error('Erro ao atualizar último login:', error);
-                    }
-                }
-                
                 document.getElementById('nomeUsuarioLogado').textContent = usuarioAtual.nome;
                 
-                // Carregar dados do usuário
                 carregarDadosUsuario();
                 
-                // Mostrar aplicação principal
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('mainApp').style.display = 'block';
                 
                 const mensagem = resultado.novo ? 
-                    'Bem-vindo! Sua conta foi criada com sucesso! Os dados serão salvos localmente no seu navegador.' : 
-                    'Login realizado com sucesso!';
+                    '🎉 Bem-vindo! Conta criada com sucesso!' : 
+                    '✅ Login realizado!';
+                    
                 setTimeout(() => mostrarStatus('statusCompra', mensagem, 'success'), 500);
-                
             } else {
                 mostrarStatus('statusLogin', resultado.mensagem, 'error');
             }
         }
 
         function fazerLogout() {
-            if (confirm('Tem certeza que deseja sair? Seus dados ficarão salvos localmente.')) {
-                // Salvar último usuário para facilitar próximo login
-                try {
-                    localStorage.setItem('ultimo_usuario_logado', usuarioAtual.nome);
-                } catch (error) {
-                    console.error('Erro ao salvar último usuário:', error);
-                }
-                
+            if (confirm('Deseja sair? Seus dados ficarão salvos.')) {
                 usuarioAtual = null;
                 compras = [];
                 cartoes = [];
                 
-                // Limpar formulários
                 document.getElementById('nomeUsuario').value = '';
                 document.getElementById('senhaUsuario').value = '';
                 
-                // Mostrar tela de login
                 document.getElementById('mainApp').style.display = 'none';
                 document.getElementById('loginScreen').style.display = 'block';
             }
@@ -1006,29 +818,19 @@
         function carregarDadosUsuario() {
             if (!usuarioAtual) return;
             
-            // Carregar compras
-            const comprasCarregadas = DataManager.carregarDados(usuarioAtual.nome, 'compras');
-            compras = comprasCarregadas || [];
+            compras = DataManager.carregarDados(usuarioAtual.nome, 'compras') || [];
+            cartoes = DataManager.carregarDados(usuarioAtual.nome, 'cartoes') || [];
             
-            // Carregar cartões (ou usar padrão para novos usuários)
-            const cartoesCarregados = DataManager.carregarDados(usuarioAtual.nome, 'cartoes');
-            cartoes = cartoesCarregados || [
-                { id: 1, nome: "Nubank", fechamento: 1, vencimento: 10, limite: 0, observacoes: "Cartão padrão" },
-                { id: 2, nome: "Inter", fechamento: 15, vencimento: 25, limite: 0, observacoes: "Cartão padrão" },
-                { id: 3, nome: "C6 Bank", fechamento: 5, vencimento: 15, limite: 0, observacoes: "Cartão padrão" }
-            ];
-            
-            // Salvar cartões padrão se for novo usuário
-            if (!cartoesCarregados) {
+            // Cartões padrão para novos usuários
+            if (cartoes.length === 0) {
+                cartoes = [
+                    { id: 1, nome: "Nubank", limite: 0 },
+                    { id: 2, nome: "Inter", limite: 0 },
+                    { id: 3, nome: "C6 Bank", limite: 0 }
+                ];
                 DataManager.salvarDados(usuarioAtual.nome, 'cartoes', cartoes);
             }
             
-            console.log(`Dados carregados para ${usuarioAtual.nome}:`, {
-                compras: compras.length,
-                cartoes: cartoes.length
-            });
-            
-            // Atualizar interface
             atualizarInterface();
         }
 
@@ -1036,187 +838,68 @@
             if (usuarioAtual) {
                 const sucessoCompras = DataManager.salvarDados(usuarioAtual.nome, 'compras', compras);
                 const sucessoCartoes = DataManager.salvarDados(usuarioAtual.nome, 'cartoes', cartoes);
-                
-                if (!sucessoCompras || !sucessoCartoes) {
-                    console.warn('Erro ao salvar alguns dados do usuário');
-                }
-                
                 return sucessoCompras && sucessoCartoes;
             }
             return false;
         }
 
+        // Funções da interface
         function mostrarStatus(elementId, mensagem, tipo) {
             const element = document.getElementById(elementId);
             element.innerHTML = `<div class="status-message ${tipo}">${mensagem}</div>`;
             setTimeout(() => {
                 element.innerHTML = '';
-            }, tipo === 'error' ? 5000 : 3000); // Erros ficam mais tempo na tela
-        }
-
-        function atualizarInterface() {
-            document.getElementById('dataCompra').value = new Date().toISOString().split('T')[0];
-            
-            // Definir data padrão da primeira parcela para financiamentos (próximo mês)
-            const proximoMes = new Date();
-            proximoMes.setMonth(proximoMes.getMonth() + 1);
-            document.getElementById('primeiraParcela').value = proximoMes.toISOString().split('T')[0];
-            
-            preencherMeses();
-            atualizarFiltroCartoes();
-            carregarCartoes();
-            atualizarTabelaCartoes();
-            atualizarTabelaCompras();
-            carregarOpcoesParcelas('normal');
-            
-            // Configurar filtros de relatório
-            configurarFiltrosRelatorio();
-        }
-
-        // Inicialização da página
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Sistema de Controle de Gastos iniciado');
-            console.log('LocalStorage disponível:', typeof(Storage) !== "undefined");
-            
-            // Verificar se há usuário logado recentemente
-            try {
-                const ultimoUsuario = localStorage.getItem('ultimo_usuario_logado');
-                if (ultimoUsuario) {
-                    document.getElementById('nomeUsuario').value = ultimoUsuario;
-                    console.log('Último usuário carregado:', ultimoUsuario);
-                }
-            } catch (error) {
-                console.error('Erro ao carregar último usuário:', error);
-            }
-            
-            // Mostrar estatísticas de armazenamento no console
-            const stats = DataManager.obterEstatisticasArmazenamento();
-            console.log('Estatísticas de armazenamento:', stats);
-        });
-
-        function carregarOpcoesParcelas(tipoCompra) {
-            const selectParcelas = document.getElementById('parcelas');
-            selectParcelas.innerHTML = '';
-
-            if (tipoCompra === 'normal') {
-                // Opções para cartão de crédito (até 24x)
-                const opcoes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 18, 24];
-                opcoes.forEach(parcela => {
-                    const option = document.createElement('option');
-                    option.value = parcela;
-                    option.textContent = parcela === 1 ? '1x (À vista)' : `${parcela}x`;
-                    selectParcelas.appendChild(option);
-                });
-            } else if (tipoCompra === 'financiamento') {
-                // Opções para financiamento (até 96x)
-                const opcoes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 18, 24, 30, 36, 48, 60, 72, 84, 96];
-                opcoes.forEach(parcela => {
-                    const option = document.createElement('option');
-                    option.value = parcela;
-                    option.textContent = parcela === 1 ? '1x (À vista)' : `${parcela}x`;
-                    selectParcelas.appendChild(option);
-                });
-            }
+            }, tipo === 'error' ? 5000 : 3000);
         }
 
         function switchTab(tabName) {
-            // Ocultar todas as abas
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
             
-            // Remover classe active de todos os botões
             document.querySelectorAll('.tab-button').forEach(btn => {
                 btn.classList.remove('active');
             });
             
-            // Mostrar aba selecionada
             document.getElementById(tabName).classList.add('active');
-            
-            // Ativar botão correspondente
             event.target.classList.add('active');
             
-            // Atualizar visualização se estiver na aba de apresentação
-            if (tabName === 'apresentacao') {
+            if (tabName === 'backup') {
+                atualizarInfoStorage();
+            }
+            
+            if (tabName === 'visualizacao') {
                 atualizarVisualizacao();
             }
-            
-            // Gerar relatório se estiver na aba de relatórios
-            if (tabName === 'relatorios') {
-                gerarRelatorio();
-            }
         }
 
-        function toggleFinanciamento() {
-            const tipoCompra = document.getElementById('tipoCompra').value;
-            const secaoFinanciamento = document.getElementById('secaoFinanciamento');
-            const categoria = document.getElementById('categoria');
-            const grupoCartao = document.getElementById('grupoCartao');
-            const cartaoSelect = document.getElementById('cartao');
-            const labelDescricao = document.getElementById('labelDescricao');
-            const labelValorTotal = document.getElementById('labelValorTotal');
-            
-            if (tipoCompra === 'financiamento') {
-                secaoFinanciamento.style.display = 'block';
-                grupoCartao.style.display = 'none';
-                categoria.value = 'Financiamento';
-                cartaoSelect.removeAttribute('required');
-                labelDescricao.textContent = 'Descrição do Financiamento';
-                labelValorTotal.textContent = 'Valor Total do Financiamento (R$)';
-                
-                // Carregar opções de parcelas para financiamento
-                carregarOpcoesParcelas('financiamento');
-                
-                // Limpar seleção do cartão
-                cartaoSelect.value = '';
-                
-                // Definir data padrão para primeira parcela
-                const proximoMes = new Date();
-                proximoMes.setMonth(proximoMes.getMonth() + 1);
-                document.getElementById('primeiraParcela').value = proximoMes.toISOString().split('T')[0];
-            } else {
-                secaoFinanciamento.style.display = 'none';
-                grupoCartao.style.display = 'block';
-                cartaoSelect.setAttribute('required', 'required');
-                labelDescricao.textContent = 'Descrição da Compra';
-                labelValorTotal.textContent = 'Valor Total (R$)';
-                
-                // Carregar opções de parcelas para cartão
-                carregarOpcoesParcelas('normal');
-                
-                if (categoria.value === 'Financiamento') {
-                    categoria.value = '';
-                }
-            }
+        function atualizarInterface() {
+            document.getElementById('dataCompra').value = new Date().toISOString().split('T')[0];
+            carregarCartoes();
+            atualizarTabelaCartoes();
+            atualizarTabelaCompras();
+            atualizarVisualizacao();
         }
 
+        // Funções de cartões
         function adicionarCartao() {
             const nome = document.getElementById('nomeCartao').value.trim();
-            const fechamento = parseInt(document.getElementById('diaFechamento').value);
-            const vencimento = parseInt(document.getElementById('diaVencimento').value);
             const limite = parseFloat(document.getElementById('limiteCartao').value) || 0;
-            const observacoes = document.getElementById('observacoesCartao').value.trim();
 
-            if (!nome || !fechamento || !vencimento) {
-                mostrarStatus('statusCartao', 'Por favor, preencha todos os campos obrigatórios!', 'error');
+            if (!nome) {
+                mostrarStatus('statusCartao', 'Digite o nome do cartão!', 'error');
                 return;
             }
 
-            // Verificar se já existe cartão com o mesmo nome
-            const cartaoExistente = cartoes.find(c => c.nome.toLowerCase() === nome.toLowerCase());
-            if (cartaoExistente) {
-                mostrarStatus('statusCartao', 'Já existe um cartão com este nome!', 'error');
+            if (cartoes.find(c => c.nome.toLowerCase() === nome.toLowerCase())) {
+                mostrarStatus('statusCartao', 'Cartão já existe!', 'error');
                 return;
             }
 
             const cartao = {
                 id: Date.now(),
                 nome,
-                fechamento,
-                vencimento,
-                limite,
-                observacoes,
-                dataCriacao: new Date().toISOString()
+                limite
             };
 
             cartoes.push(cartao);
@@ -1225,29 +908,22 @@
                 atualizarTabelaCartoes();
                 carregarCartoes();
                 limparFormularioCartao();
-                configurarFiltrosRelatorio();
-                mostrarStatus('statusCartao', 'Cartão adicionado com sucesso!', 'success');
-                console.log('Cartão adicionado:', cartao);
+                mostrarStatus('statusCartao', '✅ Cartão adicionado!', 'success');
             } else {
-                // Remover da lista se não conseguiu salvar
                 cartoes.pop();
-                mostrarStatus('statusCartao', 'Erro ao salvar o cartão!', 'error');
+                mostrarStatus('statusCartao', '❌ Erro ao salvar!', 'error');
             }
         }
 
         function excluirCartao(id) {
             const cartao = cartoes.find(c => c.id === id);
-            if (!cartao) {
-                mostrarStatus('statusCartao', 'Cartão não encontrado!', 'error');
-                return;
-            }
+            if (!cartao) return;
 
-            // Verificar se há compras vinculadas a este cartão
             const comprasVinculadas = compras.filter(c => c.cartao === cartao.nome);
             
-            let mensagem = 'Tem certeza que deseja excluir este cartão?';
+            let mensagem = `Excluir "${cartao.nome}"?`;
             if (comprasVinculadas.length > 0) {
-                mensagem += `\n\nAtenção: Existem ${comprasVinculadas.length} compra(s) vinculada(s) a este cartão.`;
+                mensagem += `\n\n⚠️ ${comprasVinculadas.length} compra(s) vinculada(s).`;
             }
 
             if (confirm(mensagem)) {
@@ -1256,13 +932,10 @@
                 if (salvarDadosUsuario()) {
                     atualizarTabelaCartoes();
                     carregarCartoes();
-                    configurarFiltrosRelatorio();
-                    mostrarStatus('statusCartao', 'Cartão excluído com sucesso!', 'success');
-                    console.log('Cartão excluído:', cartao);
+                    mostrarStatus('statusCartao', '✅ Cartão excluído!', 'success');
                 } else {
-                    // Restaurar se não conseguiu salvar
                     cartoes.push(cartao);
-                    mostrarStatus('statusCartao', 'Erro ao salvar alterações!', 'error');
+                    mostrarStatus('statusCartao', '❌ Erro ao salvar!', 'error');
                 }
             }
         }
@@ -1272,12 +945,7 @@
             tbody.innerHTML = '';
 
             if (cartoes.length === 0) {
-                const row = tbody.insertRow();
-                row.innerHTML = `
-                    <td colspan="6" style="text-align: center; color: #6b7280; padding: 30px;">
-                        Nenhum cartão cadastrado. Adicione seu primeiro cartão acima.
-                    </td>
-                `;
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #6b7280; padding: 30px;">Nenhum cartão cadastrado</td></tr>';
                 return;
             }
 
@@ -1285,12 +953,9 @@
                 const row = tbody.insertRow();
                 row.innerHTML = `
                     <td>${cartao.nome}</td>
-                    <td>Dia ${cartao.fechamento}</td>
-                    <td>Dia ${cartao.vencimento}</td>
                     <td class="currency">${cartao.limite > 0 ? `R$ ${cartao.limite.toFixed(2).replace('.', ',')}` : 'Não informado'}</td>
-                    <td>${cartao.observacoes || '-'}</td>
                     <td>
-                        <button class="btn btn-danger" onclick="excluirCartao(${cartao.id})" title="Excluir cartão">
+                        <button class="btn btn-danger" onclick="excluirCartao(${cartao.id})" title="Excluir">
                             🗑️
                         </button>
                     </td>
@@ -1299,53 +964,38 @@
         }
 
         function carregarCartoes() {
-            const selectCartao = document.getElementById('cartao');
-            selectCartao.innerHTML = '<option value="">Selecione o cartão</option>';
+            const select = document.getElementById('cartao');
+            select.innerHTML = '<option value="">Selecione o cartão</option>';
 
             cartoes.forEach(cartao => {
                 const option = document.createElement('option');
                 option.value = cartao.nome;
                 option.textContent = cartao.nome;
-                selectCartao.appendChild(option);
+                select.appendChild(option);
             });
         }
 
         function limparFormularioCartao() {
             document.getElementById('nomeCartao').value = '';
-            document.getElementById('diaFechamento').value = '';
-            document.getElementById('diaVencimento').value = '';
             document.getElementById('limiteCartao').value = '';
-            document.getElementById('observacoesCartao').value = '';
         }
 
+        // Funções de compras
         function adicionarCompra() {
-            const tipoCompra = document.getElementById('tipoCompra').value;
-            const cartao = tipoCompra === 'financiamento' ? 'Financiamento' : document.getElementById('cartao').value;
+            const cartao = document.getElementById('cartao').value;
             const dataCompra = document.getElementById('dataCompra').value;
             const descricao = document.getElementById('descricao').value.trim();
             const categoria = document.getElementById('categoria').value;
             const valorTotal = parseFloat(document.getElementById('valorTotal').value);
             const parcelas = parseInt(document.getElementById('parcelas').value);
-            const observacoes = document.getElementById('observacoes').value.trim();
 
-            // Validação específica por tipo
-            if (tipoCompra === 'normal' && !cartao) {
-                mostrarStatus('statusCompra', 'Por favor, selecione um cartão para compras normais!', 'error');
+            if (!cartao || !dataCompra || !descricao || !valorTotal || !parcelas) {
+                mostrarStatus('statusCompra', 'Preencha todos os campos!', 'error');
                 return;
             }
 
-            if (!dataCompra || !descricao || !valorTotal || !parcelas) {
-                mostrarStatus('statusCompra', 'Por favor, preencha todos os campos obrigatórios!', 'error');
-                return;
-            }
-
-            if (valorTotal <= 0) {
-                mostrarStatus('statusCompra', 'O valor deve ser maior que zero!', 'error');
-                return;
-            }
-
-            if (parcelas <= 0) {
-                mostrarStatus('statusCompra', 'O número de parcelas deve ser maior que zero!', 'error');
+            if (valorTotal <= 0 || parcelas <= 0) {
+                mostrarStatus('statusCompra', 'Valores devem ser positivos!', 'error');
                 return;
             }
 
@@ -1354,47 +1004,40 @@
                 cartao,
                 dataCompra,
                 descricao,
-                categoria: categoria || 'Outros',
+                categoria,
                 valorTotal,
                 parcelas,
-                valorParcela: valorTotal / parcelas,
-                observacoes,
-                tipoCompra,
-                dataCriacao: new Date().toISOString()
+                valorParcela: valorTotal / parcelas
             };
-
-            // Se for financiamento, adicionar dados específicos
-            if (tipoCompra === 'financiamento') {
-                const primeiraParcela = document.getElementById('primeiraParcela').value;
-                if (!primeiraParcela) {
-                    mostrarStatus('statusCompra', 'Por favor, defina a data da primeira parcela para financiamentos!', 'error');
-                    return;
-                }
-                compra.valorFinanciado = parseFloat(document.getElementById('valorFinanciado').value) || 0;
-                compra.taxaJuros = parseFloat(document.getElementById('taxaJuros').value) || 0;
-                compra.tipoFinanciamento = document.getElementById('tipoFinanciamento').value;
-                compra.entrada = parseFloat(document.getElementById('entrada').value) || 0;
-                compra.primeiraParcela = primeiraParcela;
-            }
 
             compras.push(compra);
             
             if (salvarDadosUsuario()) {
                 atualizarTabelaCompras();
                 limparFormulario();
-                atualizarFiltroCartoes();
-                mostrarStatus('statusCompra', 'Compra adicionada com sucesso!', 'success');
-                console.log('Compra adicionada:', compra);
-                
-                // Atualizar visualização se estiver na aba ativa
-                const abaAtiva = document.querySelector('.tab-content.active');
-                if (abaAtiva && abaAtiva.id === 'apresentacao') {
-                    atualizarVisualizacao();
-                }
+                atualizarVisualizacao();
+                mostrarStatus('statusCompra', '✅ Compra adicionada!', 'success');
             } else {
-                // Remover da lista se não conseguiu salvar
                 compras.pop();
-                mostrarStatus('statusCompra', 'Erro ao salvar a compra!', 'error');
+                mostrarStatus('statusCompra', '❌ Erro ao salvar!', 'error');
+            }
+        }
+
+        function excluirCompra(id) {
+            const compra = compras.find(c => c.id === id);
+            if (!compra) return;
+
+            if (confirm(`Excluir "${compra.descricao}"?`)) {
+                compras = compras.filter(c => c.id !== id);
+                
+                if (salvarDadosUsuario()) {
+                    atualizarTabelaCompras();
+                    atualizarVisualizacao();
+                    mostrarStatus('statusCompra', '✅ Compra excluída!', 'success');
+                } else {
+                    compras.push(compra);
+                    mostrarStatus('statusCompra', '❌ Erro ao salvar!', 'error');
+                }
             }
         }
 
@@ -1403,35 +1046,23 @@
             tbody.innerHTML = '';
 
             if (compras.length === 0) {
-                const row = tbody.insertRow();
-                row.innerHTML = `
-                    <td colspan="8" style="text-align: center; color: #6b7280; padding: 30px;">
-                        Nenhuma compra cadastrada. Adicione sua primeira compra acima.
-                    </td>
-                `;
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #6b7280; padding: 30px;">Nenhuma compra cadastrada</td></tr>';
                 return;
             }
 
-            // Ordenar compras por data (mais recente primeiro)
             const comprasOrdenadas = [...compras].sort((a, b) => new Date(b.dataCompra) - new Date(a.dataCompra));
 
             comprasOrdenadas.forEach(compra => {
                 const row = tbody.insertRow();
-                const tipoIcon = compra.tipoCompra === 'financiamento' ? '💰' : '';
-                const categoriaDisplay = compra.categoria ? `${tipoIcon} ${compra.categoria}` : '-';
-                
                 row.innerHTML = `
                     <td>${new Date(compra.dataCompra + 'T00:00:00').toLocaleDateString('pt-BR')}</td>
                     <td>${compra.cartao}</td>
-                    <td>${compra.descricao}${compra.tipoCompra === 'financiamento' ? ' (Financiamento)' : ''}
-                        ${compra.observacoes ? `<br><small style="color: #6b7280;">${compra.observacoes}</small>` : ''}
-                    </td>
-                    <td>${categoriaDisplay}</td>
+                    <td>${compra.descricao}</td>
+                    <td>${compra.categoria}</td>
                     <td class="currency">R$ ${compra.valorTotal.toFixed(2).replace('.', ',')}</td>
                     <td>${compra.parcelas}x</td>
-                    <td class="currency">R$ ${compra.valorParcela.toFixed(2).replace('.', ',')}</td>
                     <td>
-                        <button class="btn btn-danger" onclick="excluirCompra(${compra.id})" title="Excluir compra">
+                        <button class="btn btn-danger" onclick="excluirCompra(${compra.id})" title="Excluir">
                             🗑️
                         </button>
                     </td>
@@ -1439,539 +1070,85 @@
             });
         }
 
-        function excluirCompra(id) {
-            const compra = compras.find(c => c.id === id);
-            if (!compra) {
-                mostrarStatus('statusCompra', 'Compra não encontrada!', 'error');
-                return;
-            }
-
-            if (confirm(`Tem certeza que deseja excluir a compra "${compra.descricao}"?`)) {
-                compras = compras.filter(c => c.id !== id);
-                
-                if (salvarDadosUsuario()) {
-                    atualizarTabelaCompras();
-                    atualizarFiltroCartoes();
-                    atualizarVisualizacao();
-                    mostrarStatus('statusCompra', 'Compra excluída com sucesso!', 'success');
-                    console.log('Compra excluída:', compra);
-                } else {
-                    // Restaurar se não conseguiu salvar
-                    compras.push(compra);
-                    mostrarStatus('statusCompra', 'Erro ao salvar alterações!', 'error');
-                }
-            }
-        }
-
         function limparFormulario() {
-            document.getElementById('tipoCompra').value = 'normal';
             document.getElementById('cartao').value = '';
             document.getElementById('descricao').value = '';
-            document.getElementById('categoria').value = '';
+            document.getElementById('categoria').value = 'Alimentação';
             document.getElementById('valorTotal').value = '';
             document.getElementById('parcelas').value = '1';
-            document.getElementById('observacoes').value = '';
-            
-            // Resetar interface
-            document.getElementById('secaoFinanciamento').style.display = 'none';
-            document.getElementById('grupoCartao').style.display = 'block';
-            document.getElementById('cartao').setAttribute('required', 'required');
-            document.getElementById('labelDescricao').textContent = 'Descrição da Compra';
-            document.getElementById('labelValorTotal').textContent = 'Valor Total (R$)';
-            
-            // Recarregar opções de parcelas para compra normal
-            carregarOpcoesParcelas('normal');
-            
-            // Limpar campos de financiamento
-            document.getElementById('valorFinanciado').value = '';
-            document.getElementById('taxaJuros').value = '';
-            document.getElementById('tipoFinanciamento').value = '';
-            document.getElementById('entrada').value = '';
-            
-            // Definir nova data padrão para primeira parcela
-            const proximoMes = new Date();
-            proximoMes.setMonth(proximoMes.getMonth() + 1);
-            document.getElementById('primeiraParcela').value = proximoMes.toISOString().split('T')[0];
-        }
-
-        function preencherMeses() {
-            const selectMes = document.getElementById('filtroMes');
-            const valorAtual = selectMes.value; // Manter seleção atual
-            selectMes.innerHTML = '';
-            
-            // Coletar todos os meses que têm parcelas
-            const mesesComParcelas = new Set();
-            const dataAtual = new Date();
-            const nomesMes = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
-                           'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-            
-            compras.forEach(compra => {
-                // Calcular primeira parcela baseada no fechamento do cartão ou data específica
-                const primeiraParcela = calcularPrimeiraParcela(compra.dataCompra, compra.cartao, compra.primeiraParcela);
-                
-                // Adicionar todos os meses das parcelas desta compra
-                for (let parcela = 1; parcela <= compra.parcelas; parcela++) {
-                    const dataParcela = new Date(primeiraParcela.getFullYear(), primeiraParcela.getMonth() + (parcela - 1), 1);
-                    const mesAno = `${String(dataParcela.getMonth() + 1).padStart(2, '0')}/${dataParcela.getFullYear()}`;
-                    mesesComParcelas.add(mesAno);
-                }
-            });
-            
-            // Converter para array e ordenar
-            const mesesOrdenados = Array.from(mesesComParcelas).sort((a, b) => {
-                const [mesA, anoA] = a.split('/').map(Number);
-                const [mesB, anoB] = b.split('/').map(Number);
-                if (anoA !== anoB) return anoA - anoB;
-                return mesA - mesB;
-            });
-            
-            // Se não há compras, mostrar alguns meses padrão
-            if (mesesOrdenados.length === 0) {
-                for (let i = -2; i <= 12; i++) {
-                    const data = new Date(dataAtual.getFullYear(), dataAtual.getMonth() + i, 1);
-                    const mesAno = `${String(data.getMonth() + 1).padStart(2, '0')}/${data.getFullYear()}`;
-                    mesesOrdenados.push(mesAno);
-                }
-                // Remover duplicatas e ordenar novamente
-                const mesesUnicos = [...new Set(mesesOrdenados)].sort((a, b) => {
-                    const [mesA, anoA] = a.split('/').map(Number);
-                    const [mesB, anoB] = b.split('/').map(Number);
-                    if (anoA !== anoB) return anoA - anoB;
-                    return mesA - mesB;
-                });
-                mesesOrdenados.length = 0;
-                mesesOrdenados.push(...mesesUnicos);
-            }
-            
-            // Adicionar opções ao select
-            mesesOrdenados.forEach((mesAno, index) => {
-                const [mes, ano] = mesAno.split('/').map(Number);
-                const nomeCompleto = `${nomesMes[mes - 1]} ${ano}`;
-                
-                const option = document.createElement('option');
-                option.value = mesAno;
-                option.textContent = nomeCompleto;
-                
-                // Manter seleção anterior ou selecionar o próximo mês como padrão
-                if (valorAtual && mesAno === valorAtual) {
-                    option.selected = true;
-                } else if (!valorAtual) {
-                    const proximoMes = new Date(dataAtual.getFullYear(), dataAtual.getMonth() + 1, 1);
-                    const proximoMesAno = `${String(proximoMes.getMonth() + 1).padStart(2, '0')}/${proximoMes.getFullYear()}`;
-                    
-                    if (mesAno === proximoMesAno || (index === 0 && !mesesOrdenados.includes(proximoMesAno))) {
-                        option.selected = true;
-                    }
-                }
-                
-                selectMes.appendChild(option);
-            });
-        }
-
-        function atualizarFiltroCartoes() {
-            const selectCartao = document.getElementById('filtroCartao');
-            const valorAtual = selectCartao.value; // Manter seleção atual
-            const cartoesUnicos = [...new Set(compras.map(compra => compra.cartao))];
-            
-            // Manter a opção "Todos os cartões"
-            selectCartao.innerHTML = '<option value="">Todos os cartões</option>';
-            
-            cartoesUnicos.forEach(cartao => {
-                const option = document.createElement('option');
-                option.value = cartao;
-                option.textContent = cartao;
-                
-                // Manter seleção anterior
-                if (valorAtual && cartao === valorAtual) {
-                    option.selected = true;
-                }
-                
-                selectCartao.appendChild(option);
-            });
-            
-            // Atualizar lista de meses também, pois pode ter mudado
-            preencherMeses();
-        }
-
-        // FUNÇÃO CORRIGIDA DO FECHAMENTO
-        function calcularPrimeiraParcela(dataCompra, nomeCartao, primeiraParcela = null) {
-            // Para financiamentos com data específica, usar a data definida
-            if (primeiraParcela) {
-                const data = new Date(primeiraParcela + 'T00:00:00');
-                return new Date(data.getFullYear(), data.getMonth(), 1);
-            }
-
-            // Para financiamentos sem data específica, usar sempre o próximo mês
-            if (nomeCartao === 'Financiamento') {
-                const data = new Date(dataCompra + 'T00:00:00');
-                return new Date(data.getFullYear(), data.getMonth() + 1, 1);
-            }
-
-            const cartao = cartoes.find(c => c.nome === nomeCartao);
-            if (!cartao) {
-                // Fallback para fechamento no dia 1 se cartão não encontrado
-                const data = new Date(dataCompra + 'T00:00:00');
-                return new Date(data.getFullYear(), data.getMonth() + 1, 1);
-            }
-
-            const data = new Date(dataCompra + 'T00:00:00');
-            const anoCompra = data.getFullYear();
-            const mesCompra = data.getMonth(); // 0-11
-            const diaCompra = data.getDate(); // 1-31
-            const diaFechamento = cartao.fechamento;
-            
-            // Se a data de fechamento já passou neste mês, considerar o fechamento do próximo mês
-            if (diaCompra > diaFechamento) {
-                // Compra foi após o fechamento, vai para a próxima fatura (mês + 1)
-                return new Date(anoCompra, mesCompra + 1, 1);
-            } else {
-                // Compra foi antes/no dia do fechamento, vai para a fatura atual (mesmo mês)
-                return new Date(anoCompra, mesCompra, 1);
-            }
         }
 
         function atualizarVisualizacao() {
-            const cartaoFiltro = document.getElementById('filtroCartao').value;
-            const mesFiltro = document.getElementById('filtroMes').value;
+            const total = compras.reduce((sum, compra) => sum + compra.valorTotal, 0);
+            const numeroCompras = compras.length;
             
-            if (!mesFiltro) {
-                document.getElementById('totalPagar').textContent = 'R$ 0,00';
-                document.getElementById('periodoInfo').textContent = 'Selecione um período para visualizar';
-                document.getElementById('detalhesGastos').innerHTML = `
-                    <div class="empty-state">
-                        <div style="font-size: 48px; margin-bottom: 20px;">📊</div>
-                        <p>Selecione um cartão e mês para ver os detalhes dos gastos</p>
-                    </div>
-                `;
-                return;
-            }
+            document.getElementById('totalGastos').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+            document.getElementById('numeroCompras').textContent = `${numeroCompras} compra${numeroCompras !== 1 ? 's' : ''} cadastrada${numeroCompras !== 1 ? 's' : ''}`;
+        }
 
-            const [mes, ano] = mesFiltro.split('/').map(Number);
-            let total = 0;
-            let detalhes = [];
-
-            compras.forEach(compra => {
-                // Verificar se o cartão corresponde ao filtro
-                if (cartaoFiltro && compra.cartao !== cartaoFiltro) {
-                    return;
-                }
-
-                // Calcular primeira parcela baseada no fechamento do cartão
-                const primeiraParcela = calcularPrimeiraParcela(compra.dataCompra, compra.cartao, compra.primeiraParcela);
-                
-                // Verificar todas as parcelas da compra
-                for (let parcela = 1; parcela <= compra.parcelas; parcela++) {
-                    const dataParcela = new Date(primeiraParcela.getFullYear(), primeiraParcela.getMonth() + (parcela - 1), 1);
-                    
-                    if (dataParcela.getMonth() + 1 === mes && dataParcela.getFullYear() === ano) {
-                        total += compra.valorParcela;
-                        const tipoDisplay = compra.tipoCompra === 'financiamento' ? '💰 ' : '';
-                        detalhes.push({
-                            descricao: `${tipoDisplay}${compra.descricao} (${parcela}ª de ${compra.parcelas} parcelas)`,
-                            valor: compra.valorParcela,
-                            cartao: compra.cartao,
-                            categoria: compra.categoria
-                        });
-                    }
-                }
-            });
-
-            // Atualizar interface
-            document.getElementById('totalPagar').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+        // Funções de backup
+        function atualizarInfoStorage() {
+            if (!usuarioAtual) return;
             
-            const nomesMes = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
-                           'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-            const nomeCartao = cartaoFiltro || 'Todos os cartões';
-            document.getElementById('periodoInfo').textContent = `${nomeCartao} - ${nomesMes[mes-1]} ${ano}`;
-
-            // Mostrar detalhes
-            const detalhesContainer = document.getElementById('detalhesGastos');
-            if (detalhes.length === 0) {
-                detalhesContainer.innerHTML = `
-                    <div class="empty-state">
-                        <div style="font-size: 48px; margin-bottom: 20px;">🤷‍♂️</div>
-                        <p>Nenhum gasto encontrado para este período</p>
-                    </div>
-                `;
+            const stats = DataManager.obterEstatisticas(usuarioAtual.nome);
+            
+            document.getElementById('espacoUsado').textContent = `${stats.tamanhoKB} KB`;
+            document.getElementById('totalComprasInfo').textContent = compras.length;
+            document.getElementById('totalCartoesInfo').textContent = cartoes.length;
+            
+            if (stats.ultimoBackup) {
+                const data = stats.ultimoBackup.toLocaleDateString('pt-BR');
+                const hora = stats.ultimoBackup.toLocaleTimeString('pt-BR');
+                document.getElementById('ultimoBackup').textContent = `${data} às ${hora}`;
             } else {
-                // Ordenar detalhes por valor (maior primeiro)
-                detalhes.sort((a, b) => b.valor - a.valor);
-                
-                detalhesContainer.innerHTML = detalhes.map(detalhe => `
-                    <div class="detail-item">
-                        <div class="detail-description">
-                            ${detalhe.descricao}
-                            ${cartaoFiltro ? '' : `<br><small style="color: #6b7280;">${detalhe.cartao}</small>`}
-                            ${detalhe.categoria ? `<br><small style="color: #059669;">${detalhe.categoria}</small>` : ''}
-                        </div>
-                        <div class="detail-value">R$ ${detalhe.valor.toFixed(2).replace('.', ',')}</div>
-                    </div>
-                `).join('');
+                document.getElementById('ultimoBackup').textContent = 'Nunca';
             }
         }
 
-        // FUNÇÕES DE RELATÓRIO
-        function configurarFiltrosRelatorio() {
-            // Configurar filtro de cartão
-            const selectCartao = document.getElementById('relatorioCartao');
-            const cartoesUnicos = [...new Set(compras.map(compra => compra.cartao))];
-            
-            selectCartao.innerHTML = '<option value="">Todos os cartões</option>';
-            cartoesUnicos.forEach(cartao => {
-                const option = document.createElement('option');
-                option.value = cartao;
-                option.textContent = cartao;
-                selectCartao.appendChild(option);
-            });
-
-            // Configurar datas padrão (últimos 3 meses)
-            const hoje = new Date();
-            const dataFim = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
-            const dataInicio = new Date(hoje.getFullYear(), hoje.getMonth() - 2, 1);
-            
-            document.getElementById('relatorioDataInicio').value = dataInicio.toISOString().split('T')[0];
-            document.getElementById('relatorioDataFim').value = dataFim.toISOString().split('T')[0];
-        }
-
-        function gerarRelatorio() {
-            const dataInicio = document.getElementById('relatorioDataInicio').value;
-            const dataFim = document.getElementById('relatorioDataFim').value;
-            const cartaoFiltro = document.getElementById('relatorioCartao').value;
-            const categoriaFiltro = document.getElementById('relatorioCategoria').value;
-
-            if (!dataInicio || !dataFim) {
-                return;
-            }
-
-            if (new Date(dataInicio) > new Date(dataFim)) {
-                mostrarStatus('statusCompra', 'A data de início deve ser anterior à data de fim!', 'error');
-                return;
-            }
-
-            // Filtrar compras no período
-            const comprasFiltradas = compras.filter(compra => {
-                const dataCompra = new Date(compra.dataCompra + 'T00:00:00');
-                const inicio = new Date(dataInicio + 'T00:00:00');
-                const fim = new Date(dataFim + 'T23:59:59');
-                
-                const dentroData = dataCompra >= inicio && dataCompra <= fim;
-                const dentroCartao = !cartaoFiltro || compra.cartao === cartaoFiltro;
-                const dentroCategoria = !categoriaFiltro || compra.categoria === categoriaFiltro;
-                
-                return dentroData && dentroCartao && dentroCategoria;
-            });
-
-            // Gerar relatório por cartão
-            gerarRelatorioCartoes(comprasFiltradas);
-            
-            // Gerar relatório por categoria
-            gerarRelatorioCategorias(comprasFiltradas);
-            
-            // Gerar relatório mensal
-            gerarRelatorioMensal(comprasFiltradas);
-        }
-
-        function gerarRelatorioCartoes(comprasFiltradas) {
-            const relatorioCartoes = {};
-            
-            comprasFiltradas.forEach(compra => {
-                if (!relatorioCartoes[compra.cartao]) {
-                    relatorioCartoes[compra.cartao] = {
-                        total: 0,
-                        quantidade: 0
-                    };
-                }
-                relatorioCartoes[compra.cartao].total += compra.valorTotal;
-                relatorioCartoes[compra.cartao].quantidade += 1;
-            });
-
-            const container = document.getElementById('relatorioCartoes');
-            
-            if (Object.keys(relatorioCartoes).length === 0) {
-                container.innerHTML = '<div class="empty-state"><p>Nenhum gasto encontrado no período selecionado</p></div>';
-                return;
-            }
-
-            // Ordenar por valor total
-            const cartoesOrdenados = Object.entries(relatorioCartoes)
-                .sort(([,a], [,b]) => b.total - a.total);
-
-            const totalGeral = cartoesOrdenados.reduce((sum, [, dados]) => sum + dados.total, 0);
-
-            let html = cartoesOrdenados.map(([cartao, dados]) => {
-                const percentual = totalGeral > 0 ? ((dados.total / totalGeral) * 100).toFixed(1) : 0;
-                return `
-                    <div class="report-item">
-                        <div class="report-label">
-                            ${cartao} (${dados.quantidade} compra${dados.quantidade > 1 ? 's' : ''})
-                            <br><small style="color: #6b7280;">${percentual}% do total</small>
-                        </div>
-                        <div class="report-value">R$ ${dados.total.toFixed(2).replace('.', ',')}</div>
-                    </div>
-                `;
-            }).join('');
-
-            // Adicionar total geral
-            html += `
-                <div class="report-item" style="border-top: 2px solid #3b82f6; margin-top: 10px; padding-top: 15px;">
-                    <div class="report-label" style="font-weight: bold;">Total Geral</div>
-                    <div class="report-value" style="color: #3b82f6; font-size: 20px;">R$ ${totalGeral.toFixed(2).replace('.', ',')}</div>
-                </div>
-            `;
-
-            container.innerHTML = html;
-        }
-
-        function gerarRelatorioCategorias(comprasFiltradas) {
-            const relatorioCategorias = {};
-            
-            comprasFiltradas.forEach(compra => {
-                const categoria = compra.categoria || 'Sem Categoria';
-                if (!relatorioCategorias[categoria]) {
-                    relatorioCategorias[categoria] = {
-                        total: 0,
-                        quantidade: 0
-                    };
-                }
-                relatorioCategorias[categoria].total += compra.valorTotal;
-                relatorioCategorias[categoria].quantidade += 1;
-            });
-
-            const container = document.getElementById('relatorioCategorias');
-            
-            if (Object.keys(relatorioCategorias).length === 0) {
-                container.innerHTML = '<div class="empty-state"><p>Nenhum gasto encontrado no período selecionado</p></div>';
-                return;
-            }
-
-            // Ordenar por valor total
-            const categoriasOrdenadas = Object.entries(relatorioCategorias)
-                .sort(([,a], [,b]) => b.total - a.total);
-
-            const totalGeral = categoriasOrdenadas.reduce((sum, [, dados]) => sum + dados.total, 0);
-
-            let html = categoriasOrdenadas.map(([categoria, dados]) => {
-                const percentual = totalGeral > 0 ? ((dados.total / totalGeral) * 100).toFixed(1) : 0;
-                return `
-                    <div class="report-item">
-                        <div class="report-label">
-                            ${categoria} (${dados.quantidade} compra${dados.quantidade > 1 ? 's' : ''})
-                            <br><small style="color: #6b7280;">${percentual}% do total</small>
-                        </div>
-                        <div class="report-value">R$ ${dados.total.toFixed(2).replace('.', ',')}</div>
-                    </div>
-                `;
-            }).join('');
-
-            // Adicionar total geral
-            html += `
-                <div class="report-item" style="border-top: 2px solid #3b82f6; margin-top: 10px; padding-top: 15px;">
-                    <div class="report-label" style="font-weight: bold;">Total Geral</div>
-                    <div class="report-value" style="color: #3b82f6; font-size: 20px;">R$ ${totalGeral.toFixed(2).replace('.', ',')}</div>
-                </div>
-            `;
-
-            container.innerHTML = html;
-        }
-
-        function gerarRelatorioMensal(comprasFiltradas) {
-            const relatorioMensal = {};
-            const nomesMes = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 
-                           'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-            
-            comprasFiltradas.forEach(compra => {
-                const data = new Date(compra.dataCompra + 'T00:00:00');
-                const mesAno = `${nomesMes[data.getMonth()]}/${data.getFullYear()}`;
-                
-                if (!relatorioMensal[mesAno]) {
-                    relatorioMensal[mesAno] = {
-                        total: 0,
-                        quantidade: 0,
-                        ordenacao: data.getFullYear() * 12 + data.getMonth() // Para ordenação correta
-                    };
-                }
-                relatorioMensal[mesAno].total += compra.valorTotal;
-                relatorioMensal[mesAno].quantidade += 1;
-            });
-
-            const container = document.getElementById('relatorioMensal');
-            
-            if (Object.keys(relatorioMensal).length === 0) {
-                container.innerHTML = '<div class="empty-state"><p>Nenhum gasto encontrado no período selecionado</p></div>';
-                return;
-            }
-
-            // Ordenar por mês/ano
-            const mesesOrdenados = Object.entries(relatorioMensal)
-                .sort(([,a], [,b]) => a.ordenacao - b.ordenacao);
-
-            const totalGeral = mesesOrdenados.reduce((sum, [, dados]) => sum + dados.total, 0);
-            const mediaGeral = totalGeral / mesesOrdenados.length;
-
-            let html = mesesOrdenados.map(([mesAno, dados]) => {
-                const percentual = totalGeral > 0 ? ((dados.total / totalGeral) * 100).toFixed(1) : 0;
-                const comparacaoMedia = dados.total > mediaGeral ? '↑' : dados.total < mediaGeral ? '↓' : '→';
-                const corComparacao = dados.total > mediaGeral ? '#ef4444' : dados.total < mediaGeral ? '#059669' : '#6b7280';
-                
-                return `
-                    <div class="report-item">
-                        <div class="report-label">
-                            ${mesAno} (${dados.quantidade} compra${dados.quantidade > 1 ? 's' : ''})
-                            <br><small style="color: #6b7280;">
-                                ${percentual}% do total 
-                                <span style="color: ${corComparacao};">${comparacaoMedia}</span>
-                            </small>
-                        </div>
-                        <div class="report-value">R$ ${dados.total.toFixed(2).replace('.', ',')}</div>
-                    </div>
-                `;
-            }).join('');
-
-            // Adicionar estatísticas gerais
-            html += `
-                <div class="report-item" style="border-top: 2px solid #3b82f6; margin-top: 10px; padding-top: 15px;">
-                    <div class="report-label" style="font-weight: bold;">
-                        Total Geral
-                        <br><small style="color: #6b7280;">Média mensal: R$ ${mediaGeral.toFixed(2).replace('.', ',')}</small>
-                    </div>
-                    <div class="report-value" style="color: #3b82f6; font-size: 20px;">R$ ${totalGeral.toFixed(2).replace('.', ',')}</div>
-                </div>
-            `;
-
-            container.innerHTML = html;
-        }
-
-        // Funções utilitárias para exportar/importar dados
-        function exportarDadosUsuario() {
+        function exportarDados() {
             if (!usuarioAtual) {
-                mostrarStatus('statusCompra', 'Nenhum usuário logado!', 'error');
+                mostrarStatus('statusCompra', '❌ Usuário não logado!', 'error');
                 return;
             }
 
-            const dados = DataManager.exportarDados(usuarioAtual.nome);
-            if (!dados) {
-                mostrarStatus('statusCompra', 'Erro ao exportar dados!', 'error');
-                return;
-            }
+            try {
+                const dados = {
+                    usuario: usuarioAtual.nome,
+                    dataExportacao: new Date().toISOString(),
+                    versao: '2.0',
+                    compras: compras,
+                    cartoes: cartoes,
+                    estatisticas: {
+                        totalCompras: compras.length,
+                        totalCartoes: cartoes.length,
+                        valorTotal: compras.reduce((sum, c) => sum + c.valorTotal, 0)
+                    }
+                };
 
-            const dataStr = JSON.stringify(dados, null, 2);
-            const blob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `gastos_${usuarioAtual.nome.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            
-            URL.revokeObjectURL(url);
-            mostrarStatus('statusCompra', 'Dados exportados com sucesso!', 'success');
+                const dataStr = JSON.stringify(dados, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `gastos_${usuarioAtual.nome.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                
+                URL.revokeObjectURL(url);
+                mostrarStatus('statusCompra', '✅ Dados exportados com sucesso!', 'success');
+                
+                console.log('📤 Dados exportados:', dados);
+            } catch (error) {
+                console.error('❌ Erro ao exportar:', error);
+                mostrarStatus('statusCompra', '❌ Erro ao exportar dados!', 'error');
+            }
         }
 
-        function importarDadosUsuario(event) {
+        function importarDados(event) {
             if (!usuarioAtual) {
-                mostrarStatus('statusCompra', 'Nenhum usuário logado!', 'error');
+                mostrarStatus('statusCompra', '❌ Usuário não logado!', 'error');
                 return;
             }
 
@@ -1983,123 +1160,167 @@
                 try {
                     const dadosImportados = JSON.parse(e.target.result);
                     
-                    if (DataManager.importarDados(usuarioAtual.nome, dadosImportados)) {
-                        carregarDadosUsuario();
-                        mostrarStatus('statusCompra', 'Dados importados com sucesso!', 'success');
-                    } else {
-                        mostrarStatus('statusCompra', 'Erro ao importar dados! Verifique o formato do arquivo.', 'error');
+                    if (!dadosImportados.compras && !dadosImportados.cartoes) {
+                        mostrarStatus('statusCompra', '❌ Arquivo inválido!', 'error');
+                        return;
+                    }
+
+                    const confirmacao = confirm(`
+Importar dados de "${dadosImportados.usuario || 'Usuário desconhecido'}"?
+
+📊 Compras: ${dadosImportados.compras?.length || 0}
+💳 Cartões: ${dadosImportados.cartoes?.length || 0}
+
+⚠️ ATENÇÃO: Isso substituirá todos os seus dados atuais!
+                    `.trim());
+
+                    if (confirmacao) {
+                        if (dadosImportados.compras) {
+                            compras = dadosImportados.compras;
+                        }
+                        if (dadosImportados.cartoes) {
+                            cartoes = dadosImportados.cartoes;
+                        }
+
+                        if (salvarDadosUsuario()) {
+                            atualizarInterface();
+                            mostrarStatus('statusCompra', '✅ Dados importados com sucesso!', 'success');
+                        } else {
+                            mostrarStatus('statusCompra', '❌ Erro ao salvar dados importados!', 'error');
+                        }
                     }
                 } catch (error) {
-                    console.error('Erro ao importar:', error);
-                    mostrarStatus('statusCompra', 'Arquivo inválido!', 'error');
+                    console.error('❌ Erro ao importar:', error);
+                    mostrarStatus('statusCompra', '❌ Arquivo inválido ou corrompido!', 'error');
                 }
             };
             
             reader.readAsText(file);
-            event.target.value = ''; // Limpar input
+            event.target.value = '';
         }
 
-        // Event listeners para atalhos de teclado
-        document.addEventListener('keydown', function(e) {
-            // Ctrl/Cmd + S para exportar dados
-            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-                e.preventDefault();
-                if (usuarioAtual) {
-                    exportarDadosUsuario();
+        function criarBackupAutomatico() {
+            if (!usuarioAtual) {
+                mostrarStatus('statusCompra', '❌ Usuário não logado!', 'error');
+                return;
+            }
+
+            const backup = DataManager.salvarBackup(usuarioAtual.nome);
+            
+            if (backup) {
+                atualizarInfoStorage();
+                mostrarStatus('statusCompra', '✅ Backup automático criado!', 'success');
+                console.log('💾 Backup criado:', backup);
+            } else {
+                mostrarStatus('statusCompra', '❌ Erro ao criar backup!', 'error');
+            }
+        }
+
+        function confirmarLimpezaDados() {
+            if (!usuarioAtual) {
+                mostrarStatus('statusCompra', '❌ Usuário não logado!', 'error');
+                return;
+            }
+
+            const confirmacao = confirm(`
+⚠️ CUIDADO! AÇÃO IRREVERSÍVEL! ⚠️
+
+Você está prestes a APAGAR TODOS os dados:
+• ${compras.length} compras
+• ${cartoes.length} cartões
+• Todos os backups
+
+Esta ação NÃO pode ser desfeita!
+
+Tem certeza absoluta?
+            `.trim());
+
+            if (confirmacao) {
+                const segundaConfirmacao = confirm('ÚLTIMA CHANCE!\n\nDigite OK se tem certeza que quer apagar TUDO:');
+                
+                if (segundaConfirmacao) {
+                    try {
+                        // Limpar dados do usuário
+                        for (let key in localStorage) {
+                            if (key.includes(usuarioAtual.nome.toLowerCase().replace(/\s+/g, '_'))) {
+                                localStorage.removeItem(key);
+                            }
+                        }
+                        
+                        // Resetar arrays
+                        compras = [];
+                        cartoes = [];
+                        
+                        atualizarInterface();
+                        mostrarStatus('statusCompra', '🗑️ Todos os dados foram apagados!', 'warning');
+                        
+                        console.log('🗑️ Dados limpos para:', usuarioAtual.nome);
+                    } catch (error) {
+                        console.error('❌ Erro ao limpar dados:', error);
+                        mostrarStatus('statusCompra', '❌ Erro ao limpar dados!', 'error');
+                    }
                 }
             }
+        }
+
+        // Salvamento automático
+        function salvarAutomatico() {
+            if (usuarioAtual && (compras.length > 0 || cartoes.length > 0)) {
+                salvarDadosUsuario();
+                console.log('💾 Salvamento automático executado');
+            }
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Sistema de Controle de Gastos v2.0 iniciado');
             
-            // Enter na tela de login
-            if (document.getElementById('loginScreen').style.display !== 'none') {
-                if (e.key === 'Enter') {
-                    fazerLogin();
+            // Verificar localStorage
+            if (typeof(Storage) === "undefined") {
+                alert('⚠️ Seu navegador não suporta armazenamento local. Os dados não serão salvos!');
+            }
+            
+            // Tentar carregar último usuário
+            try {
+                const ultimoUsuario = localStorage.getItem('ultimo_usuario_v2');
+                if (ultimoUsuario) {
+                    document.getElementById('nomeUsuario').value = ultimoUsuario;
                 }
+            } catch (error) {
+                console.warn('Erro ao carregar último usuário:', error);
             }
         });
 
-        // Backup automático (opcional)
-        function backupAutomatico() {
-            if (usuarioAtual && compras.length > 0) {
-                try {
-                    const dados = DataManager.exportarDados(usuarioAtual.nome);
-                    localStorage.setItem(`backup_${usuarioAtual.nome}_${new Date().toDateString()}`, JSON.stringify(dados));
-                    
-                    // Manter apenas os últimos 7 backups
-                    const chaves = Object.keys(localStorage).filter(k => k.startsWith(`backup_${usuarioAtual.nome}_`));
-                    if (chaves.length > 7) {
-                        chaves.sort().slice(0, -7).forEach(chave => localStorage.removeItem(chave));
-                    }
-                } catch (error) {
-                    console.warn('Erro no backup automático:', error);
-                }
-            }
-        }
+        // Salvar automaticamente a cada 30 segundos
+        setInterval(salvarAutomatico, 30000);
 
-        // Executar backup automático a cada 30 minutos
-        setInterval(backupAutomatico, 30 * 60 * 1000);
-
-        // Salvar dados automaticamente antes de fechar a página
-        window.addEventListener('beforeunload', function(e) {
+        // Salvar antes de fechar
+        window.addEventListener('beforeunload', function() {
             if (usuarioAtual) {
                 salvarDadosUsuario();
                 try {
-                    localStorage.setItem('ultimo_usuario_logado', usuarioAtual.nome);
+                    localStorage.setItem('ultimo_usuario_v2', usuarioAtual.nome);
                 } catch (error) {
                     console.error('Erro ao salvar último usuário:', error);
                 }
             }
         });
 
-        // Verificar espaço de armazenamento periodicamente
-        function verificarEspacoArmazenamento() {
-            const stats = DataManager.obterEstatisticasArmazenamento();
-            
-            // Alerta se estiver usando muito espaço (> 8MB estimado)
-            if (stats.totalSize > 8192) { // 8MB
-                console.warn('Armazenamento local está ficando cheio. Considere exportar os dados.');
+        // Atalhos de teclado
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
                 if (usuarioAtual) {
-                    mostrarStatus('statusCompra', 'Atenção: Espaço de armazenamento local baixo. Considere exportar seus dados.', 'error');
+                    exportarDados();
                 }
             }
-        }
-
-        // Verificar espaço a cada 5 minutos
-        setInterval(verificarEspacoArmazenamento, 5 * 60 * 1000);
-
-        // Função para limpar dados antigos (pode ser chamada manualmente)
-        function limparBackupsAntigos() {
-            try {
-                const hoje = new Date();
-                const seteDiasAtras = new Date(hoje.getTime() - 7 * 24 * 60 * 60 * 1000);
-                
-                Object.keys(localStorage).forEach(chave => {
-                    if (chave.startsWith('backup_')) {
-                        try {
-                            const partes = chave.split('_');
-                            if (partes.length >= 3) {
-                                const dataBackup = new Date(partes.slice(2).join('_'));
-                                if (dataBackup < seteDiasAtras) {
-                                    localStorage.removeItem(chave);
-                                }
-                            }
-                        } catch (error) {
-                            console.warn('Erro ao processar backup:', chave, error);
-                        }
-                    }
-                });
-                
-                console.log('Limpeza de backups antigos concluída');
-            } catch (error) {
-                console.error('Erro na limpeza de backups:', error);
+            
+            if (document.getElementById('loginScreen').style.display !== 'none' && e.key === 'Enter') {
+                fazerLogin();
             }
-        }
-
-        // Executar limpeza de backups na inicialização
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(limparBackupsAntigos, 2000);
         });
 
-        console.log('Sistema de Controle de Gastos carregado com localStorage');
+        console.log('✅ Sistema carregado e pronto para uso!');
     </script>
 </body>
 </html>
